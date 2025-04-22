@@ -16,6 +16,7 @@ def homepage():
     ui.link("NHL", "/nhl")
     ui.link("NBA", "/nba")
     ui.link("MLB", "/mlb")
+    ui.link("Fantasy", "/fantasy")
 
 @ui.page('/nfl')
 def nfl_page():
@@ -43,51 +44,65 @@ def mlb_page():
 
 @ui.page('/nhl/players')
 def nhl_players_page():
-    ui.label("NHL Players Home Page")
+    ui.label("NHL Players")
     nhl_players_rows = get_nhl_players()
     nhl_players_table = ui.table(rows=nhl_players_rows)
 
 @ui.page('/nba/players')
 def nba_players_page():
-    ui.label("NBA Players Home Page")
+    ui.label("NBA Players")
     nba_players_rows = get_nba_players()
     nba_players_table = ui.table(rows=nba_players_rows)
 
 @ui.page('/mlb/players')
 def mlb_players_page():
-    ui.label("MLB Players Home Page")
+    ui.label("MLB Players")
     mlb_players_rows = get_mlb_players()
     mlb_players_table = ui.table(rows=mlb_players_rows)
 
 @ui.page('/nfl/players')
 def nfl_players_page():
-    ui.label("NFL Players Home Page")
+    ui.label("NFL Players")
     nfl_players_rows = get_nfl_players()
     nfl_players_table = ui.table(rows=nfl_players_rows)
 
 @ui.page('/nhl/games')
 def nhl_games_page():
-    ui.label("NHL Games Home Page")
+    ui.label("NHL Games")
     nhl_games_rows = get_nhl_games()
     nhl_games_table = ui.table(rows=nhl_games_rows)
 
 @ui.page('/nba/games')
 def nba_games_page():
-    ui.label("NBA Games Home Page")
+    ui.label("NBA Games")
     nba_games_rows = get_nba_games()
     nba_games_table = ui.table(rows=nba_games_rows)
 
 @ui.page('/nfl/games')
 def nfl_games_page():
-    ui.label("NFL Games Home Page")
+    ui.label("NFL Games")
     nfl_games_rows = get_nfl_games()
     nfl_games_table = ui.table(rows=nfl_games_rows)
 
 @ui.page('mlb/games')
 def mlb_games_page():
-    ui.label("MLB Games Home Page")
+    ui.label("MLB Games")
     mlb_games_rows = get_mlb_games()
     mlb_games_table = ui.table(rows=mlb_games_rows)
+
+@ui.page('/fantasy')
+def fantasy_page():
+    ui.label("Fantasy Home Page")
+    ui.link("Players to Draft", "/fantasy/players")
+    ui.link("My team", "/fantasy/team")
+
+@ui.page('/fantasy/players')
+def fantasy_players_page():
+    ui.label("Fantasy Players")
+
+@ui.page('/fantasy/team')
+def fantasy_team_page():
+    ui.label("Fantasy Team")
 
 
 def get_nhl_players():
