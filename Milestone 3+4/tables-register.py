@@ -84,7 +84,7 @@ def nfl_games_page():
     nfl_games_rows = get_nfl_games()
     nfl_games_table = ui.table(rows=nfl_games_rows)
 
-@ui.page('mlb/games')
+@ui.page('/mlb/games')
 def mlb_games_page():
     ui.label("MLB Games")
     mlb_games_rows = get_mlb_games()
