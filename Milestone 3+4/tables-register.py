@@ -21,26 +21,37 @@ def homepage():
 @ui.page('/nfl')
 def nfl_page():
     ui.label("NFL Home Page")
+    ui.link("Teams", "/nfl/teams")
     ui.link("Players", "/nfl/players")
     ui.link("Games", "/nfl/games")
 
 @ui.page('/nhl')
 def nhl_page():
     ui.label("NHL Home Page")
+    ui.link("Teams", "/nhl/teams")
     ui.link("Players", "/nhl/players")
     ui.link("Games", "/nhl/games")
 
 @ui.page('/nba')
 def nba_page():
     ui.label("NBA Home Page")
+    ui.link("Teams", "/nba/teams")
     ui.link("Players", "/nba/players")
     ui.link("Games", "/nba/games")
 
 @ui.page('/mlb')
 def mlb_page():
     ui.label("MLB Home Page")
+    ui.link("Teams", "/mlb/teams")
     ui.link("Players", "/mlb/players")
     ui.link("Games", "/mlb/games")
+
+
+@ui.page('/nfl/players')
+def nfl_players_page():
+    ui.label("NFL Players")
+    nfl_players_rows = get_nfl_players()
+    nfl_players_table = ui.table(rows=nfl_players_rows)
 
 @ui.page('/nhl/players')
 def nhl_players_page():
@@ -60,11 +71,52 @@ def mlb_players_page():
     mlb_players_rows = get_mlb_players()
     mlb_players_table = ui.table(rows=mlb_players_rows)
 
-@ui.page('/nfl/players')
-def nfl_players_page():
-    ui.label("NFL Players")
-    nfl_players_rows = get_nfl_players()
-    nfl_players_table = ui.table(rows=nfl_players_rows)
+
+@ui.page('/nfl/teams')
+def nfl_teams_page():
+    ui.label("NFL Teams")
+    nfl_teams_rows = get_nfl_teams()
+    nfl_teams_table = ui.table(rows=nfl_teams_rows)
+
+@ui.page('/nhl/teams')
+def nhl_teams_page():
+    ui.label("NHL Teams")
+    nhl_teams_rows = get_nhl_teams()
+    nhl_teams_table = ui.table(rows=nhl_teams_rows) 
+
+@ui.page('/nba/teams')
+def nba_teams_page():   
+    ui.label("NBA Teams")
+    nba_teams_rows = get_nba_teams()
+    nba_teams_table = ui.table(rows=nba_teams_rows)
+
+@ui.page('/mlb/teams')
+def mlb_teams_page():
+    ui.label("MLB Teams")
+    mlb_teams_rows = get_mlb_teams()
+    mlb_teams_table = ui.table(rows=mlb_teams_rows)
+
+def get_nfl_teams():
+    cur.execute("select t_name from teams where league='NFL'")
+    get_nfl_teams = cur.fetchall()
+    return get_nfl_teams
+
+def get_nhl_teams():
+    cur.execute("select t_name from teams where league='NHL'")
+    get_nhl_teams = cur.fetchall()
+    return get_nhl_teams
+
+def get_nba_teams():
+    cur.execute("select t_name from teams where league='NBA'")
+    get_nba_teams = cur.fetchall()
+    return get_nba_teams    
+
+def get_mlb_teams():
+    cur.execute("select t_name from teams where league='MLB'")
+    get_mlb_teams = cur.fetchall()
+    return get_mlb_teams
+
+
 
 def format_game_row(row):
     winner_style = 'font-bold text-green-600'
