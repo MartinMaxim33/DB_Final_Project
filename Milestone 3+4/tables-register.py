@@ -66,9 +66,20 @@ def nfl_players_page():
     nfl_players_rows = get_nfl_players()
     nfl_players_table = ui.table(rows=nfl_players_rows)
 
+def format_game_row(row):
+    winner_style = 'font-bold text-green-600'
+    return {'Team 1': row['team1'],
+            'Team 2': row['team2'],
+            'Winner': ui.html(f'<span class="{winner_style}">{row["winner"]} 🏆</span>'),
+            'Score': row['score'],
+            'Date': row['date'],
+            'Time': row['time'],
+            'Venue': row['venue']
+            }
+
 @ui.page('/nhl/games')
 def nhl_games_page():
-    ui.label("NHL Games")
+    ui.label("🏒 NHL Games")
     nhl_games_rows = get_nhl_games()
     nhl_games_table = ui.table(rows=nhl_games_rows)
 
@@ -126,23 +137,83 @@ def get_mlb_players():
     return rows
 
 def get_nhl_games():
-    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='NHL' and t2.league = 'NHL'")
+    cur.execute("""
+        SELECT 
+            t1.t_name AS team1,
+            t2.t_name AS team2,
+            tw.t_name AS winner,
+            score,
+            date,
+            time,
+            venue
+        FROM games
+        JOIN teams AS t1 ON games.team1 = t1.team_id
+        JOIN teams AS t2 ON games.team2 = t2.team_id
+        JOIN teams AS tw ON games.winner = tw.team_id
+        WHERE t1.league = 'NHL' AND t2.league = 'NHL'
+    """)
     rows = cur.fetchall()
     return rows
+
 
 def get_nba_games():
-    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='NBA' and t2.league = 'NBA'")
+    cur.execute("""
+        SELECT 
+            t1.t_name AS team1,
+            t2.t_name AS team2,
+            tw.t_name AS winner,
+            score,
+            date,
+            time,
+            venue
+        FROM games
+        JOIN teams AS t1 ON games.team1 = t1.team_id
+        JOIN teams AS t2 ON games.team2 = t2.team_id
+        JOIN teams AS tw ON games.winner = tw.team_id
+        WHERE t1.league = 'NBA' AND t2.league = 'NBA'
+    """)
     rows = cur.fetchall()
     return rows
+
 
 def get_nfl_games():
-    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='NFL' and t2.league = 'NFL'")
+    cur.execute("""
+        SELECT 
+            t1.t_name AS team1,
+            t2.t_name AS team2,
+            tw.t_name AS winner,
+            score,
+            date,
+            time,
+            venue
+        FROM games
+        JOIN teams AS t1 ON games.team1 = t1.team_id
+        JOIN teams AS t2 ON games.team2 = t2.team_id
+        JOIN teams AS tw ON games.winner = tw.team_id
+        WHERE t1.league = 'NFL' AND t2.league = 'NFL'
+    """)
     rows = cur.fetchall()
     return rows
 
+
 def get_mlb_games():
-    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='MLB' and t2.league = 'MLB'")
+    cur.execute("""
+        SELECT 
+            t1.t_name AS team1,
+            t2.t_name AS team2,
+            tw.t_name AS winner,
+            score,
+            date,
+            time,
+            venue
+        FROM games
+        JOIN teams AS t1 ON games.team1 = t1.team_id
+        JOIN teams AS t2 ON games.team2 = t2.team_id
+        JOIN teams AS tw ON games.winner = tw.team_id
+        WHERE t1.league = 'MLB' AND t2.league = 'MLB'
+    """)
     rows = cur.fetchall()
     return rows
+
 
 ui.run(reload=False)
