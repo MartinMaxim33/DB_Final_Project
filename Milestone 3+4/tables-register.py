@@ -111,22 +111,22 @@ def get_mlb_players():
     return rows
 
 def get_nhl_games():
-    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue, t1.league, t2.league FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='NHL'")
+    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='NHL' and t2.league = 'NHL'")
     rows = cur.fetchall()
     return rows
 
 def get_nba_games():
-    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue, t1.league, t2.league FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='NBA'")
+    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue, t1.league, t2.league FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='NBA' and t2.league = 'NBA'")
     rows = cur.fetchall()
     return rows
 
 def get_nfl_games():
-    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue, t1.league, t2.league FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='NFL'")
+    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue, t1.league, t2.league FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='NFL' and t2.league = 'NFL'")
     rows = cur.fetchall()
     return rows
 
 def get_mlb_games():
-    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue, t1.league, t2.league FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='MLB'")
+    cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue, t1.league, t2.league FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='MLB' and t2.league = 'MLB'")
     rows = cur.fetchall()
     return rows
 
