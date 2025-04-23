@@ -280,24 +280,28 @@ def format_game_row(row):
 @ui.page('/nfl/games')
 def nfl_games_page():
     ui.label("NFL Games")
+    ui.link("Back to NFL", "/nfl")
     nfl_games_rows = get_nfl_games()
     nfl_games_table = ui.table(rows=nfl_games_rows)
 
 @ui.page('/nhl/games')
 def nhl_games_page():
     ui.label("NHL Games")
+    ui.link("Back to NHL", "/nhl")
     nhl_games_rows = get_nhl_games()
     nhl_games_table = ui.table(rows=nhl_games_rows)
 
 @ui.page('/nba/games')
 def nba_games_page():
     ui.label("NBA Games")
+    ui.link("Back to NBA", "/nba")
     nba_games_rows = get_nba_games()
     nba_games_table = ui.table(rows=nba_games_rows)
 
 @ui.page('/mlb/games')
 def mlb_games_page():
     ui.label("MLB Games")
+    ui.link("Back to MLB", "/mlb")
     mlb_games_rows = get_mlb_games()
     mlb_games_table = ui.table(rows=mlb_games_rows)
 
