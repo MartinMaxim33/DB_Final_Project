@@ -285,7 +285,7 @@ def nfl_games_page():
 
 @ui.page('/nhl/games')
 def nhl_games_page():
-    ui.label("🏒 NHL Games")
+    ui.label("NHL Games")
     nhl_games_rows = get_nhl_games()
     nhl_games_table = ui.table(rows=nhl_games_rows)
 
