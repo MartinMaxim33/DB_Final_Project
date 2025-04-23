@@ -17,6 +17,7 @@ def homepage():
     ui.link("NBA", "/nba")
     ui.link("MLB", "/mlb")
     ui.link("Fantasy", "/fantasy")
+    ui.link("Dashboard", "/dashboard")
 
 @ui.page('/nfl')
 def nfl_page():
@@ -49,6 +50,12 @@ def mlb_page():
     ui.link("Players", "/mlb/players")
     ui.link("Games", "/mlb/games")
     ui.link("Back to Home", "/")
+
+@ui.page('/dashboard')
+def dashboard_page():
+    ui.label("Dashboard")
+    ui.link("Back to Home", "/")
+
 
 
 @ui.page('/nfl/players')
