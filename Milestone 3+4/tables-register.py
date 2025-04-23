@@ -24,6 +24,7 @@ def nfl_page():
     ui.link("Teams", "/nfl/teams")
     ui.link("Players", "/nfl/players")
     ui.link("Games", "/nfl/games")
+    ui.link("Back to Home", "/")
 
 @ui.page('/nhl')
 def nhl_page():
@@ -31,6 +32,7 @@ def nhl_page():
     ui.link("Teams", "/nhl/teams")
     ui.link("Players", "/nhl/players")
     ui.link("Games", "/nhl/games")
+    ui.link("Back to Home", "/")
 
 @ui.page('/nba')
 def nba_page():
@@ -38,6 +40,7 @@ def nba_page():
     ui.link("Teams", "/nba/teams")
     ui.link("Players", "/nba/players")
     ui.link("Games", "/nba/games")
+    ui.link("Back to Home", "/")
 
 @ui.page('/mlb')
 def mlb_page():
@@ -45,29 +48,34 @@ def mlb_page():
     ui.link("Teams", "/mlb/teams")
     ui.link("Players", "/mlb/players")
     ui.link("Games", "/mlb/games")
+    ui.link("Back to Home", "/")
 
 
 @ui.page('/nfl/players')
 def nfl_players_page():
     ui.label("NFL Players")
+    ui.link("Back to NFL Players", "/nfl")
     nfl_players_rows = get_nfl_players()
     nfl_players_table = ui.table(rows=nfl_players_rows)
 
 @ui.page('/nhl/players')
 def nhl_players_page():
     ui.label("NHL Players")
+    ui.link("Back to NHL Players", "/nhl")
     nhl_players_rows = get_nhl_players()
     nhl_players_table = ui.table(rows=nhl_players_rows)
 
 @ui.page('/nba/players')
 def nba_players_page():
     ui.label("NBA Players")
+    ui.link("Back to NBA Players", "/nba")
     nba_players_rows = get_nba_players()
     nba_players_table = ui.table(rows=nba_players_rows)
 
 @ui.page('/mlb/players')
 def mlb_players_page():
     ui.label("MLB Players")
+    ui.link("Back to MLB Players", "/mlb")
     mlb_players_rows = get_mlb_players()
     mlb_players_table = ui.table(rows=mlb_players_rows)
 
@@ -76,25 +84,165 @@ def mlb_players_page():
 def nfl_teams_page():
     ui.label("NFL Teams")
     nfl_teams_rows = get_nfl_teams()
-    nfl_teams_table = ui.table(rows=nfl_teams_rows)
+    with ui.column().classes('w-full'):
+        for team in nfl_teams_rows:
+            ui.link(team['t_name'], f"/nfl/team/{team['t_name']}")
+    
+    ui.link("Back to NFL Teams", "/nfl")
 
 @ui.page('/nhl/teams')
 def nhl_teams_page():
     ui.label("NHL Teams")
     nhl_teams_rows = get_nhl_teams()
-    nhl_teams_table = ui.table(rows=nhl_teams_rows) 
+    with ui.column().classes('w-full'):
+        for team in nhl_teams_rows:
+            ui.link(team['t_name'], f"/nhl/team/{team['t_name']}")
+
+    ui.link("Back to NHL Teams", "/nhl")
 
 @ui.page('/nba/teams')
 def nba_teams_page():   
     ui.label("NBA Teams")
     nba_teams_rows = get_nba_teams()
-    nba_teams_table = ui.table(rows=nba_teams_rows)
+    with ui.column().classes('w-full'):
+        for team in nba_teams_rows:
+            ui.link(team['t_name'], f"/nba/team/{team['t_name']}")
+
+    ui.link("Back to NBA Teams", "/nba")
 
 @ui.page('/mlb/teams')
 def mlb_teams_page():
     ui.label("MLB Teams")
     mlb_teams_rows = get_mlb_teams()
-    mlb_teams_table = ui.table(rows=mlb_teams_rows)
+    with ui.column().classes('w-full'):
+        for team in mlb_teams_rows:
+            ui.link(team['t_name'], f"/mlb/team/{team['t_name']}")
+
+    ui.link("Back to MLB Teams", "/mlb")
+
+@ui.page('/nfl/team/{team_name}')
+def nfl_team_page(team_name: str):
+    ui.label(f"{team_name} Team Page")
+    
+    ui.link("Back to NFL Teams", "/nfl/teams")
+    
+    with ui.tabs().classes('w-full') as tabs:
+        roster_tab = ui.tab('Roster')
+        schedule_tab = ui.tab('Schedule')
+    
+    with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
+        with ui.tab_panel(roster_tab):
+            ui.label("Team Roster")
+            roster = get_team_roster('NFL', team_name)
+            ui.table(rows=roster)
+            
+        with ui.tab_panel(schedule_tab):
+            ui.label("Team Schedule")
+            schedule = get_team_schedule('NFL', team_name)
+            ui.table(rows=schedule)
+
+@ui.page('/nhl/team/{team_name}')
+def nhl_team_page(team_name: str):
+    ui.label(f"{team_name} Team Page")
+    
+    ui.link("Back to NHL Teams", "/nhl/teams")
+    
+    with ui.tabs().classes('w-full') as tabs:
+        roster_tab = ui.tab('Roster')
+        schedule_tab = ui.tab('Schedule')
+    
+    with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
+        with ui.tab_panel(roster_tab):
+            ui.label("Team Roster")
+            roster = get_team_roster('NHL', team_name)
+            ui.table(rows=roster)
+            
+        with ui.tab_panel(schedule_tab):
+            ui.label("Team Schedule")
+            schedule = get_team_schedule('NHL', team_name)
+            ui.table(rows=schedule)
+
+@ui.page('/nba/team/{team_name}')
+def nba_team_page(team_name: str):
+    ui.label(f"{team_name} Team Page")
+    
+    ui.link("Back to NBA Teams", "/nba/teams")
+    
+    with ui.tabs().classes('w-full') as tabs:
+        roster_tab = ui.tab('Roster')
+        schedule_tab = ui.tab('Schedule')
+    
+    with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
+        with ui.tab_panel(roster_tab):
+            ui.label("Team Roster")
+            roster = get_team_roster('NBA', team_name)
+            ui.table(rows=roster)
+            
+        with ui.tab_panel(schedule_tab):
+            ui.label("Team Schedule")
+            schedule = get_team_schedule('NBA', team_name)
+            ui.table(rows=schedule)
+
+@ui.page('/mlb/team/{team_name}')
+def mlb_team_page(team_name: str):
+    ui.label(f"{team_name} Team Page")
+    
+    ui.link("Back to MLB Teams", "/mlb/teams")
+    
+    with ui.tabs().classes('w-full') as tabs:
+        roster_tab = ui.tab('Roster')
+        schedule_tab = ui.tab('Schedule')
+    
+    with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
+        with ui.tab_panel(roster_tab):
+            ui.label("Team Roster")
+            roster = get_team_roster('MLB', team_name)
+            ui.table(rows=roster)
+            
+        with ui.tab_panel(schedule_tab):
+            ui.label("Team Schedule")
+            schedule = get_team_schedule('MLB', team_name)
+            ui.table(rows=schedule)
+
+def get_team_roster(league, team_name):
+    cur.execute("""
+        SELECT first_name, last_name, jerseyno, age, height, weight, school 
+        FROM player 
+        NATURAL JOIN teams 
+        WHERE league = %s AND t_name = %s
+    """, (league, team_name))
+    return cur.fetchall()
+
+def get_team_schedule(league, team_name):
+    cur.execute("""
+        SELECT 
+            date,
+            time,
+            venue,
+            CASE 
+                WHEN t1.t_name = %s THEN t2.t_name
+                ELSE t1.t_name
+            END AS opponent,
+            CASE 
+                WHEN t1.t_name = %s THEN 'Home'
+                ELSE 'Away'
+            END AS location,
+            score,
+            CASE 
+                WHEN tw.t_name = %s THEN 'Win'
+                WHEN score IS NULL THEN 'Upcoming'
+                ELSE 'Loss'
+            END AS result
+        FROM games
+        JOIN teams AS t1 ON games.team1 = t1.team_id
+        JOIN teams AS t2 ON games.team2 = t2.team_id
+        JOIN teams AS tw ON games.winner = tw.team_id
+        WHERE (t1.t_name = %s OR t2.t_name = %s)
+        AND t1.league = %s
+        ORDER BY date, time
+    """, (team_name, team_name, team_name, team_name, team_name, league))
+    return cur.fetchall()
+
 
 def get_nfl_teams():
     cur.execute("select t_name from teams where league='NFL'")
@@ -129,6 +277,12 @@ def format_game_row(row):
             'Venue': row['venue']
             }
 
+@ui.page('/nfl/games')
+def nfl_games_page():
+    ui.label("NFL Games")
+    nfl_games_rows = get_nfl_games()
+    nfl_games_table = ui.table(rows=nfl_games_rows)
+
 @ui.page('/nhl/games')
 def nhl_games_page():
     ui.label("🏒 NHL Games")
@@ -140,12 +294,6 @@ def nba_games_page():
     ui.label("NBA Games")
     nba_games_rows = get_nba_games()
     nba_games_table = ui.table(rows=nba_games_rows)
-
-@ui.page('/nfl/games')
-def nfl_games_page():
-    ui.label("NFL Games")
-    nfl_games_rows = get_nfl_games()
-    nfl_games_table = ui.table(rows=nfl_games_rows)
 
 @ui.page('/mlb/games')
 def mlb_games_page():
@@ -167,6 +315,10 @@ def fantasy_players_page():
 def fantasy_team_page():
     ui.label("Fantasy Team")
 
+def get_nfl_players():
+    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='NFL'")
+    rows = cur.fetchall()
+    return rows
 
 def get_nhl_players():
     cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='NHL'")
@@ -178,13 +330,27 @@ def get_nba_players():
     rows = cur.fetchall()
     return rows
 
-def get_nfl_players():
-    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='NFL'")
+def get_mlb_players():
+    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='MLB'")
     rows = cur.fetchall()
     return rows
 
-def get_mlb_players():
-    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='MLB'")
+def get_nfl_games():
+    cur.execute("""
+        SELECT 
+            t1.t_name AS team1,
+            t2.t_name AS team2,
+            tw.t_name AS winner,
+            score,
+            date,
+            time,
+            venue
+        FROM games
+        JOIN teams AS t1 ON games.team1 = t1.team_id
+        JOIN teams AS t2 ON games.team2 = t2.team_id
+        JOIN teams AS tw ON games.winner = tw.team_id
+        WHERE t1.league = 'NFL' AND t2.league = 'NFL'
+    """)
     rows = cur.fetchall()
     return rows
 
@@ -207,7 +373,6 @@ def get_nhl_games():
     rows = cur.fetchall()
     return rows
 
-
 def get_nba_games():
     cur.execute("""
         SELECT 
@@ -226,27 +391,6 @@ def get_nba_games():
     """)
     rows = cur.fetchall()
     return rows
-
-
-def get_nfl_games():
-    cur.execute("""
-        SELECT 
-            t1.t_name AS team1,
-            t2.t_name AS team2,
-            tw.t_name AS winner,
-            score,
-            date,
-            time,
-            venue
-        FROM games
-        JOIN teams AS t1 ON games.team1 = t1.team_id
-        JOIN teams AS t2 ON games.team2 = t2.team_id
-        JOIN teams AS tw ON games.winner = tw.team_id
-        WHERE t1.league = 'NFL' AND t2.league = 'NFL'
-    """)
-    rows = cur.fetchall()
-    return rows
-
 
 def get_mlb_games():
     cur.execute("""
