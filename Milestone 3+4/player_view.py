@@ -12,8 +12,10 @@ cur = conn.cursor(row_factory=dict_row)
 
 #Sort types and active query. Sort1 is the column to sort by, and sort2 is the order of sorting.
 # league is the current league
-sort1 = None
-sort2 = None
+class Sort_type:
+    def __init__(self, sort1: str, sort2: str):
+        self.sort1 = sort1
+        self.sort2 = sort2
 #player_sort_query = "SELECT * FROM player natural join teams where league="
 
 #Show user the sort type when they change it in the dropdown
@@ -69,15 +71,16 @@ def refresh_player_list(new_query):
 
 # List all players with dropdowns for sorting
 def list_all_players(league):
-    with ui.row:
+    sort = Sort_type('First Name', 'Descending')
+    with ui.row():
         ui.select(['First Name', 'Last Name', 'Hometown', 'Age', 'Height', 'Weight', 'School', 'Jersey Number', 'Contract Amount', 'Contract Length'],
-                  on_change=lambda e: update_sort(e, 'sort1')).bind_value(sort1, 'value')
+                  on_change=lambda e: update_sort(league, e, sort.sort1, sort.sort2))
         ui.select(['Ascending', 'Descending'],
-                  on_change=lambda e: update_sort(e, 'sort2')).bind_value(sort2, 'value')
-    update_sort(league, sort1, sort2)
+                  on_change=lambda e: update_sort(league, e, sort.sort1, sort.sort2))
 
 def main():
-    list_all_players()
+    league = 'NHL'
+    list_all_players(league)
 
 
 main()
