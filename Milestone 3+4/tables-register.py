@@ -2,6 +2,7 @@ import psycopg
 from psycopg.rows import dict_row
 from dbinfo import *
 from nicegui import ui
+from player_view import list_all_players
 
 # Connect to an existing database
 conn = psycopg.connect(f"host=dbclass.rhodescs.org dbname=practice user={DBUSER} password={DBPASS}")
@@ -44,26 +45,22 @@ def mlb_page():
 @ui.page('/nhl/players')
 def nhl_players_page():
     ui.label("NHL Players Home Page")
-    nhl_players_rows = get_nhl_players()
-    nhl_players_table = ui.table(rows=nhl_players_rows)
+    get_players("NHL")
 
 @ui.page('/nba/players')
 def nba_players_page():
     ui.label("NBA Players Home Page")
-    nba_players_rows = get_nba_players()
-    nba_players_table = ui.table(rows=nba_players_rows)
+    get_players("NBA")
 
 @ui.page('/mlb/players')
 def mlb_players_page():
     ui.label("MLB Players Home Page")
-    mlb_players_rows = get_mlb_players()
-    mlb_players_table = ui.table(rows=mlb_players_rows)
+    get_players("MLB")
 
 @ui.page('/nfl/players')
 def nfl_players_page():
     ui.label("NFL Players Home Page")
-    nfl_players_rows = get_nfl_players()
-    nfl_players_table = ui.table(rows=nfl_players_rows)
+    get_players("NFL")
 
 @ui.page('/nhl/games')
 def nhl_games_page():
@@ -89,26 +86,8 @@ def mlb_games_page():
     mlb_games_rows = get_mlb_games()
     mlb_games_table = ui.table(rows=mlb_games_rows)
 
-
-def get_nhl_players():
-    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='NHL'")
-    rows = cur.fetchall()
-    return rows
-
-def get_nba_players():
-    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='NBA'")
-    rows = cur.fetchall()
-    return rows
-
-def get_nfl_players():
-    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='NFL'")
-    rows = cur.fetchall()
-    return rows
-
-def get_mlb_players():
-    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='MLB'")
-    rows = cur.fetchall()
-    return rows
+def get_players(league):
+    list_all_players(league)
 
 def get_nhl_games():
     cur.execute("SELECT t1.t_name, t1.team_id, t2.t_name, t2.team_id, winner, score, date, time, venue, t1.league, t2.league FROM games JOIN teams AS t1 ON games.team1 = t1.team_id JOIN teams AS t2 ON games.team2 = t2.team_id where t1.league='NHL'")
