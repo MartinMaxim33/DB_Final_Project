@@ -2,6 +2,7 @@ import psycopg
 from psycopg.rows import dict_row
 from dbinfo import *
 from nicegui import ui
+from collections import Counter
 
 # Connect to an existing database
 conn = psycopg.connect(f"host=dbclass.rhodescs.org dbname=practice user={DBUSER} password={DBPASS}")
@@ -51,11 +52,179 @@ def mlb_page():
     ui.link("Games", "/mlb/games")
     ui.link("Back to Home", "/")
 
+def get_mlb_players_ages():
+    cur.execute("select age from player natural join teams where league='MLB'")
+    rows = cur.fetchall()
+    return rows
+
+def get_player_ages():
+    cur.execute("select age from player natural join teams")
+    rows = cur.fetchall()
+    return rows
+
+def get_player_colleges():
+    cur.execute("select college from player natural join teams")
+    rows = cur.fetchall()
+    return rows
+
+def get_venue_capacity():
+    cur.execute("select t_name, league, capacity from venues natural join teams")
+    rows = cur.fetchall()
+    return rows
+
+
 @ui.page('/dashboard')
 def dashboard_page():
     ui.label("Dashboard")
-    ui.link("Back to Home", "/")
 
+
+
+    mlb_ages = get_mlb_players_ages()
+    age_counts = Counter(row['age'] for row in mlb_ages)  # Count ages, e.g., {25: 3, 28: 2, 30: 1}
+    ui.label(f"Age counts: {age_counts}")
+    age_labels = [str(age) for age in sorted(age_counts.keys())]  # Sorted ages, e.g., ['20', '21', ..., '40']
+    player_counts = [age_counts[age] for age in sorted(age_counts.keys())]  # Counts, e.g., [39, 41, ..., 55]
+
+    # Create bar chart
+    if not age_counts:
+        ui.label("No player age data available")
+    else:
+        ui.echart({
+            'title': {'text': 'MLB Players by Age'},
+            'tooltip': {'trigger': 'axis'},
+            'xAxis': {
+                'type': 'category',
+                'data': age_labels,
+                'axisLabel': {'interval': 0, 'rotate': 0}  # No rotation needed for short age labels
+            },
+            'yAxis': {
+                'type': 'value',
+                'name': 'Number of Players'
+            },
+            'series': [{
+                'data': player_counts,
+                'type': 'bar',
+                'name': 'Players',
+                'itemStyle': {
+                    'color': '#3398DB'  # Blue color from example
+                }
+            }]
+        })
+    # All leagues chart
+    all_ages = get_player_ages()  # No league filter
+    all_age_counts = Counter(row['age'] for row in all_ages)
+    all_age_labels = [str(age) for age in sorted(all_age_counts.keys())]
+    all_player_counts = [all_age_counts[age] for age in sorted(all_age_counts.keys())]
+
+    if not all_age_counts:
+        ui.label("No player age data available (all leagues)")
+    else:
+        ui.echart({
+            'title': {'text': 'Players by Age (All Leagues)'},
+            'tooltip': {'trigger': 'axis'},
+            'xAxis': {
+                'type': 'category',
+                'data': all_age_labels,
+                'axisLabel': {'interval': 0, 'rotate': 0}
+            },
+            'yAxis': {
+                'type': 'value',
+                'name': 'Number of Players'
+            },
+            'series': [{
+                'data': all_player_counts,
+                'type': 'bar',
+                'name': 'Players',
+                'itemStyle': {'color': '#3398DB'}
+            }]
+        })
+
+    colleges = get_player_colleges()
+    college_counts = Counter(row['college'] for row in colleges if row['college'] and row['college'] != 'None')
+    pie_data = [
+        {
+            'name': college,
+            'value': count,
+            'itemStyle': {
+                'color': '#000000' if college == 'USC' else '#9B1B30' if college == 'Alabama' else None
+            }
+        }
+        for college, count in sorted(college_counts.items())
+    ]
+
+    if not college_counts:
+        ui.label("No player college data available")
+    else:
+        ui.echart({
+            'title': {
+                'text': 'Players by College (All Leagues)',
+                'left': 'center'
+            },
+            'tooltip': {
+                'trigger': 'item'
+            },
+            'legend': {
+                'orient': 'vertical',
+                'left': 'left'
+            },
+            'series': [{
+                'name': 'College',
+                'type': 'pie',
+                'radius': '50%',
+                'data': pie_data,
+                'emphasis': {
+                    'itemStyle': {
+                        'shadowBlur': 10,
+                        'shadowOffsetX': 0,
+                        'shadowColor': 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        })
+
+    venues = get_venue_capacity()
+    league_capacities = {}
+    for row in venues:
+        league = row['league']
+        capacity = row['capacity']
+        if league and capacity:  # Skip None or zero capacities
+            league_capacities[league] = league_capacities.get(league, 0) + capacity
+    capacity_data = [
+        {'name': league, 'value': total}
+        for league, total in sorted(league_capacities.items(), key=lambda x: x[1], reverse=True)  # Sort by capacity
+    ]
+
+    if not capacity_data:
+        ui.label("No venue capacity data available")
+    else:
+        ui.echart({
+            'title': {
+                'text': 'Total Stadium Capacity by League',
+                'left': 'center'
+            },
+            'tooltip': {
+                'trigger': 'item'
+            },
+            'legend': {
+                'orient': 'vertical',
+                'left': 'left'
+            },
+            'series': [{
+                'name': 'League',
+                'type': 'pie',
+                'radius': '50%',
+                'data': capacity_data,
+                'emphasis': {
+                    'itemStyle': {
+                        'shadowBlur': 10,
+                        'shadowOffsetX': 0,
+                        'shadowColor': 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        })
+
+    ui.link("Back to Home", "/")
 
 
 @ui.page('/nfl/players')
