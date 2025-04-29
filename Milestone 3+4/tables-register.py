@@ -222,9 +222,11 @@ def get_team_roster(league, team_name):
 
 def get_team_schedule(league_name, team_name):
     cur.execute("""
-        SELECT 
+        SELECT distinct 
             team1,
             team2,
+            winner, 
+            loser,
             date,
             time,
             venue
