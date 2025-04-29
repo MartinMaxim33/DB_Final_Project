@@ -67,12 +67,16 @@ def get_player_colleges():
     rows = cur.fetchall()
     return rows
 
-
+def get_venue_capacity():
+    cur.execute("select t_name, league, capacity from venues natural join teams")
+    rows = cur.fetchall()
+    return rows
 
 
 @ui.page('/dashboard')
 def dashboard_page():
     ui.label("Dashboard")
+
 
 
     mlb_ages = get_mlb_players_ages()
@@ -168,6 +172,48 @@ def dashboard_page():
                 'type': 'pie',
                 'radius': '50%',
                 'data': pie_data,
+                'emphasis': {
+                    'itemStyle': {
+                        'shadowBlur': 10,
+                        'shadowOffsetX': 0,
+                        'shadowColor': 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }]
+        })
+
+    venues = get_venue_capacity()
+    league_capacities = {}
+    for row in venues:
+        league = row['league']
+        capacity = row['capacity']
+        if league and capacity:  # Skip None or zero capacities
+            league_capacities[league] = league_capacities.get(league, 0) + capacity
+    capacity_data = [
+        {'name': league, 'value': total}
+        for league, total in sorted(league_capacities.items(), key=lambda x: x[1], reverse=True)  # Sort by capacity
+    ]
+
+    if not capacity_data:
+        ui.label("No venue capacity data available")
+    else:
+        ui.echart({
+            'title': {
+                'text': 'Total Stadium Capacity by League',
+                'left': 'center'
+            },
+            'tooltip': {
+                'trigger': 'item'
+            },
+            'legend': {
+                'orient': 'vertical',
+                'left': 'left'
+            },
+            'series': [{
+                'name': 'League',
+                'type': 'pie',
+                'radius': '50%',
+                'data': capacity_data,
                 'emphasis': {
                     'itemStyle': {
                         'shadowBlur': 10,
