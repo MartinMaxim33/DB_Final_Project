@@ -145,7 +145,7 @@ def nfl_team_page(team_name: str):
             
         with ui.tab_panel(schedule_tab):
             ui.label("Team Schedule")
-            schedule = get_team_schedule('NFL', team_name)
+            schedule = get_team_schedule('NFL',team_name)
             ui.table(rows=schedule)
 
 @ui.page('/nhl/team/{team_name}')
@@ -166,7 +166,7 @@ def nhl_team_page(team_name: str):
             
         with ui.tab_panel(schedule_tab):
             ui.label("Team Schedule")
-            schedule = get_team_schedule('NHL', team_name)
+            schedule = get_team_schedule('NHL',team_name)
             ui.table(rows=schedule)
 
 @ui.page('/nba/team/{team_name}')
@@ -208,47 +208,33 @@ def mlb_team_page(team_name: str):
             
         with ui.tab_panel(schedule_tab):
             ui.label("Team Schedule")
-            schedule = get_team_schedule('MLB', team_name)
+            schedule = get_team_schedule('MLB',team_name)
             ui.table(rows=schedule)
 
 def get_team_roster(league, team_name):
     cur.execute("""
-        SELECT first_name, last_name, jerseyno, age, height, weight, school 
+        SELECT first_name, last_name, jersey, age, height, weight, college, hometown, hometown_state
         FROM player 
         NATURAL JOIN teams 
         WHERE league = %s AND t_name = %s
     """, (league, team_name))
     return cur.fetchall()
 
-def get_team_schedule(league, team_name):
+def get_team_schedule(league_name, team_name):
     cur.execute("""
         SELECT 
+            team1,
+            team2,
             date,
             time,
-            venue,
-            CASE 
-                WHEN t1.t_name = %s THEN t2.t_name
-                ELSE t1.t_name
-            END AS opponent,
-            CASE 
-                WHEN t1.t_name = %s THEN 'Home'
-                ELSE 'Away'
-            END AS location,
-            score,
-            CASE 
-                WHEN tw.t_name = %s THEN 'Win'
-                WHEN score IS NULL THEN 'Upcoming'
-                ELSE 'Loss'
-            END AS result
-        FROM games
-        JOIN teams AS t1 ON games.team1 = t1.team_id
-        JOIN teams AS t2 ON games.team2 = t2.team_id
-        JOIN teams AS tw ON games.winner = tw.team_id
-        WHERE (t1.t_name = %s OR t2.t_name = %s)
-        AND t1.league = %s
+            venue
+        FROM games 
+        NATURAL JOIN venues
+        WHERE league = %s AND (team1 = %s OR team2 = %s)
         ORDER BY date, time
-    """, (team_name, team_name, team_name, team_name, team_name, league))
+    """, (league_name, team_name, team_name))
     return cur.fetchall()
+
 
 
 def get_nfl_teams():
@@ -327,98 +313,54 @@ def fantasy_team_page():
     ui.label("Fantasy Team")
 
 def get_nfl_players():
-    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='NFL'")
+    cur.execute("select first_name, last_name, t_name, jersey, hometown, hometown_state, age, height, weight, college from player natural join teams where league='NFL'")
     rows = cur.fetchall()
     return rows
 
 def get_nhl_players():
-    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='NHL'")
+    cur.execute("select first_name, last_name, jersey, hometown, hometown_state, age, height, weight, college from player natural join teams where league='NHL'")
     rows = cur.fetchall()
     return rows
 
 def get_nba_players():
-    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='NBA'")
+    cur.execute("select first_name, last_name, jersey, hometown, hometown_state, age, height, weight, college from player natural join teams where league='NBA'")
     rows = cur.fetchall()
     return rows
 
 def get_mlb_players():
-    cur.execute("select first_name, last_name, t_name, jerseyno, hometown, age, height, weight, hand, school from player natural join teams where league='MLB'")
+    cur.execute("select first_name, last_name, jersey, hometown, hometown_state, age, height, weight, college from player natural join teams where league='MLB'")
     rows = cur.fetchall()
     return rows
 
 def get_nfl_games():
     cur.execute("""
-        SELECT 
-            t1.t_name AS team1,
-            t2.t_name AS team2,
-            tw.t_name AS winner,
-            score,
-            date,
-            time,
-            venue
-        FROM games
-        JOIN teams AS t1 ON games.team1 = t1.team_id
-        JOIN teams AS t2 ON games.team2 = t2.team_id
-        JOIN teams AS tw ON games.winner = tw.team_id
-        WHERE t1.league = 'NFL' AND t2.league = 'NFL'
-    """)
+            SELECT distinct date, time, team1, team2, winner, loser, score, league FROM games natural join venues
+            where league='NFL'
+        """)
     rows = cur.fetchall()
     return rows
 
 def get_nhl_games():
     cur.execute("""
-        SELECT 
-            t1.t_name AS team1,
-            t2.t_name AS team2,
-            tw.t_name AS winner,
-            score,
-            date,
-            time,
-            venue
-        FROM games
-        JOIN teams AS t1 ON games.team1 = t1.team_id
-        JOIN teams AS t2 ON games.team2 = t2.team_id
-        JOIN teams AS tw ON games.winner = tw.team_id
-        WHERE t1.league = 'NHL' AND t2.league = 'NHL'
+        SELECT distinct date, time, team1, team2, winner, loser, score, league FROM games natural join venues
+        where league = 'NHL'
     """)
     rows = cur.fetchall()
     return rows
 
 def get_nba_games():
     cur.execute("""
-        SELECT 
-            t1.t_name AS team1,
-            t2.t_name AS team2,
-            tw.t_name AS winner,
-            score,
-            date,
-            time,
-            venue
-        FROM games
-        JOIN teams AS t1 ON games.team1 = t1.team_id
-        JOIN teams AS t2 ON games.team2 = t2.team_id
-        JOIN teams AS tw ON games.winner = tw.team_id
-        WHERE t1.league = 'NBA' AND t2.league = 'NBA'
-    """)
+            SELECT distinct date, time, team1, team2, winner, loser, score, league FROM games natural join venues
+            where league = 'NBA'
+        """)
     rows = cur.fetchall()
     return rows
 
 def get_mlb_games():
     cur.execute("""
-        SELECT 
-            t1.t_name AS team1,
-            t2.t_name AS team2,
-            tw.t_name AS winner,
-            score,
-            date,
-            time,
-            venue
-        FROM games
-        JOIN teams AS t1 ON games.team1 = t1.team_id
-        JOIN teams AS t2 ON games.team2 = t2.team_id
-        JOIN teams AS tw ON games.winner = tw.team_id
-        WHERE t1.league = 'MLB' AND t2.league = 'MLB'
-    """)
+            SELECT distinct date, time, team1, team2, winner, loser, score, league FROM games natural join venues
+            where league = 'MLB'
+        """)
     rows = cur.fetchall()
     return rows
 

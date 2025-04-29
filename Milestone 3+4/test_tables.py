@@ -18,7 +18,7 @@ def list_player():
     print("-" * 90)
     for player in rows:
         full_name = f"{player['first_name']} {player['last_name']}"
-        print(f"{full_name:<20} {player['hometown']:<15} {player['age']:<5} {player['height']:<7} {player['weight']:<7} {player['school']:<30}")
+        print(f"{full_name:<20} {player['hometown']:<15} {player['age']:<5} {player['height']:<7} {player['weight']:<7} {player['college']:<30}")
 
 def list_championships():
     cur.execute("SELECT * FROM championships")
@@ -48,14 +48,11 @@ def list_venues():
         print(f"Venue Name: {venue['name']}, City: {venue['city']}, Type: {venue['type']}, Capacity: {venue['capacity']}")
 
 def list_games():
-    cur.execute("SELECT g.date, g.time, t1.t_name AS team1, t2.t_name AS team2, g.score, v.name AS venue FROM Games g \
-                 JOIN Teams t1 ON g.team1 = t1.team_id \
-                 JOIN Teams t2 ON g.team2 = t2.team_id \
-                 JOIN Venues v ON g.venue = v.name")
+    cur.execute("SELECT date, time, team1, team2, score, league, name FROM games natural join venues")
     rows = cur.fetchall()
     print("Here are the games:")
     for game in rows:
-        print(f"Date: {game['date']}, Time: {game['time']}, {game['team1']} vs {game['team2']}, Score: {game['score']}, Venue: {game['venue']}")
+        print(f"Date: {game['date']}, Time: {game['time']}, {game['team1']} vs {game['team2']}, Score: {game['score']}, Venue: {game['name']}, League: {game['league']}")
 
 def list_leagues():
     cur.execute("SELECT * FROM Leagues")
@@ -66,7 +63,7 @@ def list_leagues():
 
 def main():
     list_player()
-    list_championships()
+    ##list_championships()
     list_teams()
     list_venues()
     list_games()

@@ -1,2 +1,2 @@
-DBUSER = "maxmt-25"
-DBPASS = "maxmt-25"
+DBUSER = "bilna-25"
+DBPASS = "bilna-25"
