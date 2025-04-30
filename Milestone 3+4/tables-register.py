@@ -76,11 +76,44 @@ def get_venue_capacity():
     rows = cur.fetchall()
     return rows
 
+def get_player_states():
+    cur.execute("select hometown_state from player")
+    rows = cur.fetchall()
+    return rows
+
 
 @ui.page('/dashboard')
 def dashboard_page():
     ui.label("Dashboard")
 
+    states = get_player_states()
+    state_counts = Counter(row['hometown_state'] for row in states)
+    state_labels = [str(state) for state in sorted(state_counts.keys())]
+    player_counts = [state_counts[state] for state in sorted(state_counts.keys())]
+    if not state_counts:
+        ui.label("No player state data available")
+    else:
+        ui.echart({
+            'title': {'text': 'Athletes by State'},
+            'tooltip': {'trigger': 'axis'},
+            'xAxis': {
+                'type': 'category',
+                'data': state_labels,
+                'axisLabel': {'interval': 0, 'rotate': 45}  # No rotation needed for short age labels
+            },
+            'yAxis': {
+                'type': 'value',
+                'name': 'Number of Players'
+            },
+            'series': [{
+                'data': player_counts,
+                'type': 'bar',
+                'name': 'Players',
+                'itemStyle': {
+                    'color': '#3398DB'  # Blue color from example
+                }
+            }]
+        })
 
 
     mlb_ages = get_mlb_players_ages()
