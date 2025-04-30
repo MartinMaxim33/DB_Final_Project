@@ -92,7 +92,6 @@ def nfl_page():
         {"name": "Players", "url": "/nfl/players", "img": "https://cdn-icons-png.flaticon.com/512/1055/1055672.png"},
         {"name": "Games", "url": "/nfl/games", "img": "https://cdn-icons-png.flaticon.com/512/3239/3239957.png"},
         {"name": "Standings", "url": "/nfl/standings", "img": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"},
-        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -102,6 +101,9 @@ def nfl_page():
                     'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
                     ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
                     ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    with ui.row():
+        ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
 
     # Footer
     with ui.footer().classes(
@@ -131,7 +133,6 @@ def nhl_page():
         {"name": "Players", "url": "/nhl/players", "img": "https://cdn-icons-png.flaticon.com/512/2202/2202112.png"},
         {"name": "Games", "url": "/nhl/games", "img": "https://cdn-icons-png.flaticon.com/512/361/361683.png"},
         {"name": "Standings", "url": "/nhl/standings", "img": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"},
-        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -141,6 +142,9 @@ def nhl_page():
                     'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
                     ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
                     ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    with ui.row():
+        ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
 
     with ui.footer().classes(
         'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
@@ -168,7 +172,6 @@ def nba_page():
         {"name": "Players", "url": "/nba/players", "img": "https://cdn-icons-png.flaticon.com/512/1024/1024264.png"},
         {"name": "Games", "url": "/nba/games", "img": "https://cdn-icons-png.flaticon.com/512/2965/2965567.png"},
         {"name": "Standings", "url": "/nba/standings", "img": "https://cdn-icons-png.flaticon.com/512/4645/4645945.png"},
-        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -178,6 +181,9 @@ def nba_page():
                     'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
                     ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
                     ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    with ui.row():
+        ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
 
     with ui.footer().classes(
         'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
@@ -205,7 +211,6 @@ def mlb_page():
         {"name": "Players", "url": "/mlb/players", "img": "https://cdn-icons-png.flaticon.com/512/1022/1022330.png"},
         {"name": "Games", "url": "/mlb/games", "img": "https://cdn-icons-png.flaticon.com/512/2275/2275252.png"},
         {"name": "Standings", "url": "/mlb/standings", "img": "https://cdn-icons-png.flaticon.com/512/1040/1040230.png"},
-        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -215,6 +220,9 @@ def mlb_page():
                     'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
                     ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
                     ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    with ui.row():
+        ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
 
     with ui.footer().classes(
         'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
