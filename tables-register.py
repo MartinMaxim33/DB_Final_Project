@@ -72,13 +72,6 @@ def homepage():
 
 @ui.page('/nfl')
 def nfl_page():
-    ui.label("NFL Home Page")
-    ui.link("Teams", "/nfl/teams")
-    ui.link("Players", "/nfl/players")
-    ui.link("Games", "/nfl/games")
-    ui.link("Standings", "/nfl/standings")
-    ui.link("Championships", "/nfl/championships")
-    ui.link("Back to Home", "/")
     load_dark_mode()
 
     # Header
@@ -120,13 +113,6 @@ def nfl_page():
 
 @ui.page('/nhl')
 def nhl_page():
-    ui.label("NHL Home Page")
-    ui.link("Teams", "/nhl/teams")
-    ui.link("Players", "/nhl/players")
-    ui.link("Games", "/nhl/games")
-    ui.link("Standings", "/nhl/standings")
-    ui.link("Championships", "/nhl/championships")
-    ui.link("Back to Home", "/")
     load_dark_mode()
 
     with ui.header().classes('bg-gradient-to-r from-blue-900 to-cyan-600 text-white shadow-lg'):
@@ -163,13 +149,7 @@ def nhl_page():
 
 @ui.page('/nba')
 def nba_page():
-    ui.label("NBA Home Page")
-    ui.link("Teams", "/nba/teams")
-    ui.link("Players", "/nba/players")
-    ui.link("Games", "/nba/games")
-    ui.link("Standings", "/nba/standings")
-    ui.link("Championships", "/nba/championships")
-    ui.link("Back to Home", "/")
+
     load_dark_mode()
 
     with ui.header().classes('bg-gradient-to-r from-indigo-900 to-purple-600 text-white shadow-lg'):
@@ -206,13 +186,7 @@ def nba_page():
 
 @ui.page('/mlb')
 def mlb_page():
-    ui.label("MLB Home Page")
-    ui.link("Teams", "/mlb/teams")
-    ui.link("Players", "/mlb/players")
-    ui.link("Games", "/mlb/games")
-    ui.link("Standings", "/mlb/standings")
-    ui.link("Championships", "/mlb/championships")
-    ui.link("Back to Home", "/")
+
     load_dark_mode()
 
     with ui.header().classes('bg-gradient-to-r from-rose-700 to-red-500 text-white shadow-lg'):
@@ -583,9 +557,15 @@ def dashboard_page():
             }]
         })
 
+    with ui.row():
+        ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
 
-
-    ui.link("Back to Home", "/")
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
 
 
 def get_team_states():
@@ -700,7 +680,15 @@ def filtering_page():
     else:
         ui.notify("No filter options available", type='negative')
 
-    ui.link("Back to Home", "/")
+    with ui.row():
+        ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
+
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
 
 @ui.page('/nfl/players')
 def nfl_players_page():
