@@ -711,7 +711,12 @@ def filtering_page():
 def nfl_players_page():
     load_dark_mode()
     ui.label("NFL Players")
-    ui.link("Back to NFL Players", "/nfl")
+    with ui.link(target='/nfl').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NFL Hub')
+
     nfl_players_rows = get_nfl_players()
     nfl_players_table = ui.table(rows=nfl_players_rows)
 
@@ -726,7 +731,12 @@ def nfl_players_page():
 def nhl_players_page():
     load_dark_mode()
     ui.label("NHL Players")
-    ui.link("Back to NHL Players", "/nhl")
+    with ui.link(target='/nhl').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NHL Hub')
+
     nhl_players_rows = get_nhl_players()
     nhl_players_table = ui.table(rows=nhl_players_rows)
 
@@ -741,7 +751,12 @@ def nhl_players_page():
 def nba_players_page():
     load_dark_mode()
     ui.label("NBA Players")
-    ui.link("Back to NBA Players", "/nba")
+    with ui.link(target='/nba').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NBA Hub')
+
     nba_players_rows = get_nba_players()
     nba_players_table = ui.table(rows=nba_players_rows)
 
@@ -756,7 +771,12 @@ def nba_players_page():
 def mlb_players_page():
     load_dark_mode()
     ui.label("MLB Players")
-    ui.link("Back to MLB Players", "/mlb")
+    with ui.link(target='/mlb').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to MLB Hub')
+
     mlb_players_rows = get_mlb_players()
     mlb_players_table = ui.table(rows=mlb_players_rows)
 
@@ -775,8 +795,12 @@ def nfl_teams_page():
     with ui.grid(columns=6).classes('w-full'):
         for team in nfl_teams_rows:
             ui.link(team['t_name'], f"/nfl/team/{team['t_name']}")
-    
-    ui.link("Back to NFL Teams", "/nfl")
+
+    with ui.link(target='/nfl').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NFL Hub')
 
     # Footer
     with ui.footer().classes(
@@ -794,7 +818,11 @@ def nhl_teams_page():
         for team in nhl_teams_rows:
             ui.link(team['t_name'], f"/nhl/team/{team['t_name']}")
 
-    ui.link("Back to NHL Teams", "/nhl")
+    with ui.link(target='/nhl').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NHL Hub')
 
     # Footer
     with ui.footer().classes(
@@ -812,7 +840,11 @@ def nba_teams_page():
         for team in nba_teams_rows:
             ui.link(team['t_name'], f"/nba/team/{team['t_name']}")
 
-    ui.link("Back to NBA Teams", "/nba")
+    with ui.link(target='/nba').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NBA Hub')
 
     # Footer
     with ui.footer().classes(
@@ -830,7 +862,11 @@ def mlb_teams_page():
         for team in mlb_teams_rows:
             ui.link(team['t_name'], f"/mlb/team/{team['t_name']}")
 
-    ui.link("Back to MLB Teams", "/mlb")
+    with ui.link(target='/mlb').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to MLB Hub')
 
     # Footer
     with ui.footer().classes(
@@ -843,7 +879,12 @@ def mlb_teams_page():
 def nfl_standings_page():
     load_dark_mode()
     ui.label("NFL Standings")
-    ui.link("Back to NFL", "/nfl")
+    with ui.link(target='/nfl').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NFL Hub')
+
     standings_rows = get_nfl_standings()
     standings_table = ui.table(rows=standings_rows)
 
@@ -858,7 +899,12 @@ def nfl_standings_page():
 def nhl_standings_page():
     load_dark_mode()
     ui.label("NHL Standings")
-    ui.link("Back to NHL", "/nhl")
+    with ui.link(target='/nhl').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NHL Hub')
+
     standings_rows = get_nhl_standings()
     standings_table = ui.table(rows=standings_rows)
 
@@ -873,7 +919,12 @@ def nhl_standings_page():
 def nba_standings_page():
     load_dark_mode()
     ui.label("NBA Standings")
-    ui.link("Back to NBA", "/nba")
+    with ui.link(target='/nba').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NBA Hub')
+
     standings_rows = get_nba_standings()
     standings_table = ui.table(rows=standings_rows)
 
@@ -888,7 +939,12 @@ def nba_standings_page():
 def mlb_standings_page():
     load_dark_mode()
     ui.label("MLB Standings")
-    ui.link("Back to MLB", "/mlb")
+    with ui.link(target='/mlb').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to MLB Hub')
+
     standings_rows = get_mlb_standings()
     standings_table = ui.table(rows=standings_rows)
 
@@ -903,7 +959,12 @@ def mlb_standings_page():
 def nhl_championships_page():
     load_dark_mode()
     ui.label("NHL Championships")
-    ui.link("Back to NHL","/nhl")
+    with ui.link(target='/nhl').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NHL Hub')
+
     nhl_champ_rows = get_nhl_champs()
     championships_table = ui.table(rows=nhl_champ_rows)
 
@@ -918,7 +979,12 @@ def nhl_championships_page():
 def nba_championships_page():
     load_dark_mode()
     ui.label("NBA Championships")
-    ui.link("Back to NBA", "/nba")
+    with ui.link(target='/nba').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NBA Hub')
+
     nba_champ_rows = get_nba_champs()
     championships_table = ui.table(rows=nba_champ_rows)
 
@@ -933,7 +999,12 @@ def nba_championships_page():
 def mlb_championships_page():
     load_dark_mode()
     ui.label("MLB Championships")
-    ui.link("Back to MLB", "/mlb")
+    with ui.link(target='/mlb').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to MLB Hub')
+
     mlb_champ_rows = get_mlb_champs()
     championships_table = ui.table(rows=mlb_champ_rows)
 
@@ -948,7 +1019,12 @@ def mlb_championships_page():
 def nfl_championships_page():
     load_dark_mode()
     ui.label("NFL Championships")
-    ui.link("Back to NFL", "/nfl")
+    with ui.link(target='/nfl').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NFL Hub')
+
     nfl_champ_rows = get_nfl_champs()
     championships_table = ui.table(rows=nfl_champ_rows)
 
@@ -963,9 +1039,13 @@ def nfl_championships_page():
 def nfl_team_page(team_name: str):
     load_dark_mode()
     ui.label(f"{team_name} Team Page")
-    
-    ui.link("Back to NFL Teams", "/nfl/teams")
-    
+
+    with ui.link(target='/nfl/teams').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NFL Teams')
+
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
@@ -1000,9 +1080,13 @@ def nfl_team_page(team_name: str):
 def nhl_team_page(team_name: str):
     load_dark_mode()
     ui.label(f"{team_name} Team Page")
-    
-    ui.link("Back to NHL Teams", "/nhl/teams")
-    
+
+    with ui.link(target='/nhl/teams').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NHL Teams')
+
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
@@ -1037,9 +1121,13 @@ def nhl_team_page(team_name: str):
 def nba_team_page(team_name: str):
     load_dark_mode()
     ui.label(f"{team_name} Team Page")
-    
-    ui.link("Back to NBA Teams", "/nba/teams")
-    
+
+    with ui.link(target='/nba/teams').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NBA Teams')
+
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
@@ -1074,9 +1162,13 @@ def nba_team_page(team_name: str):
 def mlb_team_page(team_name: str):
     load_dark_mode()
     ui.label(f"{team_name} Team Page")
-    
-    ui.link("Back to MLB Teams", "/mlb/teams")
-    
+
+    with ui.link(target='/mlb/teams').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to MLB Teams')
+
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
@@ -1354,7 +1446,12 @@ def format_game_row(row):
 def nfl_games_page():
     load_dark_mode()
     ui.label("NFL Games")
-    ui.link("Back to NFL", "/nfl")
+    with ui.link(target='/nfl').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NFL Hub')
+
     nfl_games_rows = get_nfl_games()
     nfl_games_table = ui.table(rows=nfl_games_rows)
 
@@ -1369,7 +1466,12 @@ def nfl_games_page():
 def nhl_games_page():
     load_dark_mode()
     ui.label("NHL Games")
-    ui.link("Back to NHL", "/nhl")
+    with ui.link(target='/nhl').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NHL Hub')
+
     nhl_games_rows = get_nhl_games()
     nhl_games_table = ui.table(rows=nhl_games_rows)
 
@@ -1384,7 +1486,12 @@ def nhl_games_page():
 def nba_games_page():
     load_dark_mode()
     ui.label("NBA Games")
-    ui.link("Back to NBA", "/nba")
+    with ui.link(target='/nba').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to NBA Hub')
+
     nba_games_rows = get_nba_games()
     nba_games_table = ui.table(rows=nba_games_rows)
 
@@ -1399,7 +1506,12 @@ def nba_games_page():
 def mlb_games_page():
     load_dark_mode()
     ui.label("MLB Games")
-    ui.link("Back to MLB", "/mlb")
+    with ui.link(target='/mlb').classes(
+            'inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-black rounded hover:bg-gray-300 no-underline'
+    ):
+        ui.icon('arrow_left')
+        ui.label('Back to MLB Hub')
+
     mlb_games_rows = get_mlb_games()
     mlb_games_table = ui.table(rows=mlb_games_rows)
 
