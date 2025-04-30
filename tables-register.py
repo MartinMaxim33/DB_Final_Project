@@ -39,7 +39,6 @@ def homepage():
 
         with ui.column().classes('items-center text-center mt-10'):
             ui.label("Your Gateway to All Major Sports").classes('text-4xl font-bold text-gray-900 dark:text-white')
-            ui.label("Live Scores. Deep Analytics.").classes('text-lg text-gray-500 dark:text-gray-400')
 
         # Leagues
         leagues = [
