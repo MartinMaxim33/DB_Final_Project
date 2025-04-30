@@ -1059,9 +1059,9 @@ def nfl_team_page(team_name: str):
         with ui.tab_panel(about_tab):
             ui.label("Head Coach")
             about = get_team_coach('NFL',team_name)
-            ui.label("Superbowl Championships")
             about2 = get_team_champs('NFL',team_name)
             ui.table(rows=about)
+            ui.label("Superbowl Championships")
             ui.table(rows=about2)
 
     # Footer
