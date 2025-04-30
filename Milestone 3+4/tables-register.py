@@ -26,6 +26,7 @@ def nfl_page():
     ui.link("Teams", "/nfl/teams")
     ui.link("Players", "/nfl/players")
     ui.link("Games", "/nfl/games")
+    ui.link("Standings", "/nfl/standings")
     ui.link("Back to Home", "/")
 
 @ui.page('/nhl')
@@ -34,6 +35,7 @@ def nhl_page():
     ui.link("Teams", "/nhl/teams")
     ui.link("Players", "/nhl/players")
     ui.link("Games", "/nhl/games")
+    ui.link("Standings", "/nhl/standings")
     ui.link("Back to Home", "/")
 
 @ui.page('/nba')
@@ -42,6 +44,7 @@ def nba_page():
     ui.link("Teams", "/nba/teams")
     ui.link("Players", "/nba/players")
     ui.link("Games", "/nba/games")
+    ui.link("Standings", "/nba/standings")
     ui.link("Back to Home", "/")
 
 @ui.page('/mlb')
@@ -50,6 +53,7 @@ def mlb_page():
     ui.link("Teams", "/mlb/teams")
     ui.link("Players", "/mlb/players")
     ui.link("Games", "/mlb/games")
+    ui.link("Standings", "/mlb/standings")
     ui.link("Back to Home", "/")
 
 def get_mlb_players_ages():
@@ -296,6 +300,34 @@ def mlb_teams_page():
 
     ui.link("Back to MLB Teams", "/mlb")
 
+@ui.page('/nfl/standings')
+def nfl_standings_page():
+    ui.label("NFL Standings")
+    ui.link("Back to NFL", "/nfl")
+    standings_rows = get_nfl_standings()
+    standings_table = ui.table(rows=standings_rows)
+
+@ui.page('/nhl/standings')
+def nhl_standings_page():
+    ui.label("NHL Standings")
+    ui.link("Back to NHL", "/nhl")
+    standings_rows = get_nhl_standings()
+    standings_table = ui.table(rows=standings_rows)
+
+@ui.page('/nba/standings')
+def nba_standings_page():   
+    ui.label("NBA Standings")
+    ui.link("Back to NBA", "/nba")
+    standings_rows = get_nba_standings()
+    standings_table = ui.table(rows=standings_rows)
+
+@ui.page('/mlb/standings')
+def mlb_standings_page():
+    ui.label("MLB Standings")
+    ui.link("Back to MLB", "/mlb")
+    standings_rows = get_mlb_standings()
+    standings_table = ui.table(rows=standings_rows)
+
 @ui.page('/nfl/team/{team_name}')
 def nfl_team_page(team_name: str):
     ui.label(f"{team_name} Team Page")
@@ -379,6 +411,31 @@ def mlb_team_page(team_name: str):
             ui.label("Team Schedule")
             schedule = get_team_schedule('MLB',team_name)
             ui.table(rows=schedule)
+
+def get_nfl_standings():
+    cur.execute("""
+        select winner, count(*) as wins from games where league='NFL' group by winner order by wins desc
+    """)
+    return cur.fetchall()
+
+def get_nhl_standings():
+    cur.execute("""
+        select winner, count(*) as wins from games where league='NHL' group by winner order by wins desc
+    """)
+    return cur.fetchall()
+
+def get_nba_standings():
+    cur.execute("""
+        select winner, count(*) as wins from games where league='NBA' group by winner order by wins desc
+    """)
+    return cur.fetchall()
+
+def get_mlb_standings():
+    cur.execute("""
+        select winner, count(*) as wins from games where league='MLB' group by winner order by wins desc
+    """)
+    return cur.fetchall()
+
 
 def get_team_roster(league, team_name):
     cur.execute("""
