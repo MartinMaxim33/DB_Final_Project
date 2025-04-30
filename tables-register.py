@@ -226,18 +226,22 @@ def get_mlb_players_ages():
     cur.execute("select age from player natural join teams where league='MLB'")
     rows = cur.fetchall()
     return rows
+
 def get_nhl_players_ages():
     cur.execute("select age from player natural join teams where league='NHL'")
     rows = cur.fetchall()
     return rows
+
 def get_nfl_players_ages():
     cur.execute("select age from player natural join teams where league='NFL'")
     rows = cur.fetchall()
     return rows
+
 def get_nba_players_ages():
     cur.execute("select age from player natural join teams where league='NBA'")
     rows = cur.fetchall()
     return rows
+
 def get_player_ages():
     cur.execute("select age from player natural join teams")
     rows = cur.fetchall()
@@ -288,14 +292,13 @@ def get_players_by_state(state):
 
 @ui.page('/dashboard')
 def dashboard_page():
+    load_dark_mode()
     ui.label("Dashboard")
-
 
     states = get_player_states()
     state_counts = Counter(row['hometown_state'] for row in states)
     state_labels = [str(state) for state in sorted(state_counts.keys())]
     player_counts = [state_counts[state] for state in sorted(state_counts.keys())]
-
 
     if not state_counts:
         ui.label("No player state data available")
@@ -567,7 +570,6 @@ def dashboard_page():
         ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
             'Toggle Dark Mode')
 
-
 def get_team_states():
     try:
         conn.rollback()
@@ -580,7 +582,6 @@ def get_team_states():
         conn.rollback()
         return []
 
-
 def get_league():
     try:
         conn.rollback()
@@ -592,7 +593,6 @@ def get_league():
         print(f"Error fetching leagues: {e}")
         conn.rollback()
         return []
-
 
 def get_filtered_teams(state, league):
     try:
@@ -621,6 +621,7 @@ def get_filtered_teams(state, league):
 # Filtering page with combined filters
 @ui.page('/filtering')
 def filtering_page():
+    load_dark_mode()
     conn.rollback()
 
     state_options = get_team_states()
@@ -692,35 +693,67 @@ def filtering_page():
 
 @ui.page('/nfl/players')
 def nfl_players_page():
+    load_dark_mode()
     ui.label("NFL Players")
     ui.link("Back to NFL Players", "/nfl")
     nfl_players_rows = get_nfl_players()
     nfl_players_table = ui.table(rows=nfl_players_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nhl/players')
 def nhl_players_page():
+    load_dark_mode()
     ui.label("NHL Players")
     ui.link("Back to NHL Players", "/nhl")
     nhl_players_rows = get_nhl_players()
     nhl_players_table = ui.table(rows=nhl_players_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nba/players')
 def nba_players_page():
+    load_dark_mode()
     ui.label("NBA Players")
     ui.link("Back to NBA Players", "/nba")
     nba_players_rows = get_nba_players()
     nba_players_table = ui.table(rows=nba_players_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/mlb/players')
 def mlb_players_page():
+    load_dark_mode()
     ui.label("MLB Players")
     ui.link("Back to MLB Players", "/mlb")
     mlb_players_rows = get_mlb_players()
     mlb_players_table = ui.table(rows=mlb_players_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
 
 @ui.page('/nfl/teams')
 def nfl_teams_page():
+    load_dark_mode()
     ui.label("NFL Teams")
     nfl_teams_rows = get_nfl_teams()
     with ui.grid(columns=6).classes('w-full'):
@@ -729,8 +762,16 @@ def nfl_teams_page():
     
     ui.link("Back to NFL Teams", "/nfl")
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nhl/teams')
 def nhl_teams_page():
+    load_dark_mode()
     ui.label("NHL Teams")
     nhl_teams_rows = get_nhl_teams()
     with ui.grid(columns=6).classes('w-full'):
@@ -739,8 +780,16 @@ def nhl_teams_page():
 
     ui.link("Back to NHL Teams", "/nhl")
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nba/teams')
-def nba_teams_page():   
+def nba_teams_page():
+    load_dark_mode()
     ui.label("NBA Teams")
     nba_teams_rows = get_nba_teams()
     with ui.grid(columns=6).classes('w-full'):
@@ -749,8 +798,16 @@ def nba_teams_page():
 
     ui.link("Back to NBA Teams", "/nba")
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/mlb/teams')
 def mlb_teams_page():
+    load_dark_mode()
     ui.label("MLB Teams")
     mlb_teams_rows = get_mlb_teams()
     with ui.grid(columns=6).classes('w-full'):
@@ -759,65 +816,136 @@ def mlb_teams_page():
 
     ui.link("Back to MLB Teams", "/mlb")
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nfl/standings')
 def nfl_standings_page():
+    load_dark_mode()
     ui.label("NFL Standings")
     ui.link("Back to NFL", "/nfl")
     standings_rows = get_nfl_standings()
     standings_table = ui.table(rows=standings_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nhl/standings')
 def nhl_standings_page():
+    load_dark_mode()
     ui.label("NHL Standings")
     ui.link("Back to NHL", "/nhl")
     standings_rows = get_nhl_standings()
     standings_table = ui.table(rows=standings_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nba/standings')
-def nba_standings_page():   
+def nba_standings_page():
+    load_dark_mode()
     ui.label("NBA Standings")
     ui.link("Back to NBA", "/nba")
     standings_rows = get_nba_standings()
     standings_table = ui.table(rows=standings_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/mlb/standings')
 def mlb_standings_page():
+    load_dark_mode()
     ui.label("MLB Standings")
     ui.link("Back to MLB", "/mlb")
     standings_rows = get_mlb_standings()
     standings_table = ui.table(rows=standings_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nhl/championships')
 def nhl_championships_page():
+    load_dark_mode()
     ui.label("NHL Championships")
     ui.link("Back to NHL","/nhl")
     nhl_champ_rows = get_nhl_champs()
     championships_table = ui.table(rows=nhl_champ_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nba/championships')
 def nba_championships_page():
+    load_dark_mode()
     ui.label("NBA Championships")
     ui.link("Back to NBA", "/nba")
     nba_champ_rows = get_nba_champs()
     championships_table = ui.table(rows=nba_champ_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/mlb/championships')
 def mlb_championships_page():
+    load_dark_mode()
     ui.label("MLB Championships")
     ui.link("Back to MLB", "/mlb")
     mlb_champ_rows = get_mlb_champs()
     championships_table = ui.table(rows=mlb_champ_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nfl/championships')
 def nfl_championships_page():
+    load_dark_mode()
     ui.label("NFL Championships")
     ui.link("Back to NFL", "/nfl")
     nfl_champ_rows = get_nfl_champs()
     championships_table = ui.table(rows=nfl_champ_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
 
 @ui.page('/nfl/team/{team_name}')
 def nfl_team_page(team_name: str):
+    load_dark_mode()
     ui.label(f"{team_name} Team Page")
     
     ui.link("Back to NFL Teams", "/nfl/teams")
@@ -844,8 +972,16 @@ def nfl_team_page(team_name: str):
             ui.table(rows=about)
             ui.table(rows=about2)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nhl/team/{team_name}')
 def nhl_team_page(team_name: str):
+    load_dark_mode()
     ui.label(f"{team_name} Team Page")
     
     ui.link("Back to NHL Teams", "/nhl/teams")
@@ -872,10 +1008,16 @@ def nhl_team_page(team_name: str):
             ui.table(rows=about)
             about2 = get_team_champs('NHL',team_name)
             ui.table(rows=about2)
-
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
 
 @ui.page('/nba/team/{team_name}')
 def nba_team_page(team_name: str):
+    load_dark_mode()
     ui.label(f"{team_name} Team Page")
     
     ui.link("Back to NBA Teams", "/nba/teams")
@@ -902,8 +1044,16 @@ def nba_team_page(team_name: str):
             about2 = get_team_champs('NBA',team_name)
             ui.table(rows=about2)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/mlb/team/{team_name}')
 def mlb_team_page(team_name: str):
+    load_dark_mode()
     ui.label(f"{team_name} Team Page")
     
     ui.link("Back to MLB Teams", "/mlb/teams")
@@ -930,6 +1080,13 @@ def mlb_team_page(team_name: str):
             ui.table(rows=about)
             about2 = get_team_champs('MLB',team_name)
             ui.table(rows=about2)
+
+    # Footer
+        with ui.footer().classes(
+                'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+            ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+            ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+                'Toggle Dark Mode')
 
 def get_nfl_standings():
     cur.execute("""
@@ -1175,31 +1332,63 @@ def format_game_row(row):
 
 @ui.page('/nfl/games')
 def nfl_games_page():
+    load_dark_mode()
     ui.label("NFL Games")
     ui.link("Back to NFL", "/nfl")
     nfl_games_rows = get_nfl_games()
     nfl_games_table = ui.table(rows=nfl_games_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nhl/games')
 def nhl_games_page():
+    load_dark_mode()
     ui.label("NHL Games")
     ui.link("Back to NHL", "/nhl")
     nhl_games_rows = get_nhl_games()
     nhl_games_table = ui.table(rows=nhl_games_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/nba/games')
 def nba_games_page():
+    load_dark_mode()
     ui.label("NBA Games")
     ui.link("Back to NBA", "/nba")
     nba_games_rows = get_nba_games()
     nba_games_table = ui.table(rows=nba_games_rows)
 
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 @ui.page('/mlb/games')
 def mlb_games_page():
+    load_dark_mode()
     ui.label("MLB Games")
     ui.link("Back to MLB", "/mlb")
     mlb_games_rows = get_mlb_games()
     mlb_games_table = ui.table(rows=mlb_games_rows)
+
+    # Footer
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
 
 def get_nfl_players():
     cur.execute("select first_name, last_name, t_name, jersey, hometown, hometown_state, age, height, weight, college from player natural join teams where league='NFL'")
