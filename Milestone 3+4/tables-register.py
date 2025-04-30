@@ -3,6 +3,7 @@ from psycopg.rows import dict_row
 from dbinfo import *
 from nicegui import ui
 from collections import Counter
+from psycopg import errors
 
 # Connect to an existing database
 conn = psycopg.connect(f"host=dbclass.rhodescs.org dbname=practice user={DBUSER} password={DBPASS}")
@@ -19,6 +20,7 @@ def homepage():
     ui.link("MLB", "/mlb")
     ui.link("Fantasy", "/fantasy")
     ui.link("Dashboard", "/dashboard")
+    ui.link("Filtering", "/filtering")
 
 @ui.page('/nfl')
 def nfl_page():
@@ -77,15 +79,45 @@ def get_player_states():
     rows = cur.fetchall()
     return rows
 
+def get_teams_by_state(state):
+    try:
+        # Use parameterized query to prevent SQL injection
+        cur.execute("SELECT team_name FROM team WHERE state = %s", (state,))
+        rows = cur.fetchall()
+        return rows
+    except Exception as e:
+        print(f"Error fetching teams for state {state}: {e}")
+        return []
+
+# Database functions
+def get_player_states():
+    cur.execute("select hometown_state from player")
+    rows = cur.fetchall()
+    return rows
+
+def get_players_by_state(state):
+    try:
+        conn.rollback()  # Clear transaction issues
+        cur.execute("SELECT name FROM player WHERE hometown_state = %s", (state,))
+        rows = cur.fetchall()
+        conn.commit()
+        return rows
+    except (errors.OperationalError, errors.ProgrammingError) as e:
+        print(f"Error fetching players for state {state}: {e}")
+        conn.rollback()
+        return []
 
 @ui.page('/dashboard')
 def dashboard_page():
     ui.label("Dashboard")
 
+
     states = get_player_states()
     state_counts = Counter(row['hometown_state'] for row in states)
     state_labels = [str(state) for state in sorted(state_counts.keys())]
     player_counts = [state_counts[state] for state in sorted(state_counts.keys())]
+
+
     if not state_counts:
         ui.label("No player state data available")
     else:
@@ -257,8 +289,72 @@ def dashboard_page():
             }]
         })
 
+
+
     ui.link("Back to Home", "/")
 
+def get_team_states():
+    try:
+        conn.rollback()
+        cur.execute("SELECT DISTINCT state FROM teams WHERE state IS NOT NULL AND state != '' ORDER BY state")
+        rows = cur.fetchall()
+        conn.commit()
+        return [row['state'] for row in rows]
+    except (errors.OperationalError, errors.ProgrammingError) as e:
+        print(f"Error fetching team states: {e}")
+        conn.rollback()
+        return []
+
+def get_teams_by_state(state):
+    try:
+        conn.rollback()
+        cur.execute("SELECT t_name FROM teams WHERE state = %s", (state,))
+        rows = cur.fetchall()
+        conn.commit()
+        return rows
+    except (errors.OperationalError, errors.ProgrammingError) as e:
+        print(f"Error fetching teams for state {state}: {e}")
+        conn.rollback()
+        return []
+
+# Filtering page (updated to filter teams)
+@ui.page('/filtering')
+def filtering_page():
+    conn.rollback()
+    ui.label("Team Filtering by State")
+
+    state_options = get_team_states()
+    if not state_options:
+        ui.label("No states available")
+    else:
+        # Create table (initially empty)
+        team_table = ui.table(
+            columns=[{'name': 't_name', 'label': 'Team Name', 'field': 't_name'}],
+            rows=[],
+            row_key='t_name'
+        )
+
+        def update_team_table(state):
+            # Fetch real team data
+            teams = get_teams_by_state(state)
+            team_table.rows = [{'t_name': row['t_name']} for row in teams]
+            team_table.update()
+            ui.notify(f"{'No teams found' if not teams else f'Showing {len(teams)} team(s)'} in {state}")
+
+        # Dropdown
+        ui.label("Select a State")
+        ui.select(
+            options=state_options,
+            label="Select State",
+            value=state_options[0] if state_options else None,
+            on_change=lambda e: update_team_table(e.value)
+        )
+
+        # Initialize table with default state
+        if state_options:
+            update_team_table(state_options[0])
+
+    ui.link("Back to Home", "/")
 
 @ui.page('/nfl/players')
 def nfl_players_page():
