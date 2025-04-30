@@ -80,7 +80,6 @@ def nfl_page():
         ui.space()
         ui.link("Home", "/").classes('text-white hover:underline px-3')
         ui.link("Dashboard", "/dashboard").classes('text-white hover:underline px-3')
-        ui.link("Fantasy", "/fantasy").classes('text-white hover:underline px-3')
 
     # Main Section
     with ui.column().classes('items-center text-center mt-10'):
