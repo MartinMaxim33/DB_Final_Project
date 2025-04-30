@@ -396,66 +396,118 @@ def dashboard_page():
 
     ui.link("Back to Home", "/")
 
+
 def get_team_states():
     try:
         conn.rollback()
         cur.execute("SELECT DISTINCT state FROM teams WHERE state IS NOT NULL AND state != '' ORDER BY state")
         rows = cur.fetchall()
         conn.commit()
-        return [row['state'] for row in rows]
+        return ['All States'] + [row['state'] for row in rows]
     except (errors.OperationalError, errors.ProgrammingError) as e:
         print(f"Error fetching team states: {e}")
         conn.rollback()
         return []
 
-def get_teams_by_state(state):
+
+def get_league():
     try:
         conn.rollback()
-        cur.execute("SELECT t_name FROM teams WHERE state = %s", (state,))
+        cur.execute("SELECT DISTINCT league FROM teams WHERE league IS NOT NULL AND league != '' ORDER BY league")
+        rows = cur.fetchall()
+        conn.commit()
+        return ['All Leagues'] + [row['league'] for row in rows]
+    except (errors.OperationalError, errors.ProgrammingError) as e:
+        print(f"Error fetching leagues: {e}")
+        conn.rollback()
+        return []
+
+
+def get_filtered_teams(state, league):
+    try:
+        conn.rollback()
+        query = "SELECT t_name FROM teams WHERE t_name IS NOT NULL AND t_name != ''"
+        params = []
+
+        if state != 'All States':
+            query += " AND state = %s"
+            params.append(state)
+
+        if league != 'All Leagues':
+            query += " AND league = %s"
+            params.append(league)
+
+        cur.execute(query, tuple(params))
         rows = cur.fetchall()
         conn.commit()
         return rows
     except (errors.OperationalError, errors.ProgrammingError) as e:
-        print(f"Error fetching teams for state {state}: {e}")
+        print(f"Error fetching filtered teams: {e}")
         conn.rollback()
         return []
 
-# Filtering page (updated to filter teams)
+
+# Filtering page with combined filters
 @ui.page('/filtering')
 def filtering_page():
     conn.rollback()
-    ui.label("Team Filtering by State")
 
     state_options = get_team_states()
-    if not state_options:
-        ui.label("No states available")
-    else:
-        # Create table (initially empty)
+    league_options = get_league()
+
+    # Create a container for the dropdowns at the top
+    with ui.card().classes('w-full p-4 shadow-md'):
+        ui.label("Filter Teams").classes('text-xl font-bold mb-4')
+
+        # Create a grid layout for the dropdowns
+        with ui.grid(columns=2).classes('w-full gap-4'):
+            # State dropdown
+            with ui.column():
+                ui.label("Filter by State").classes('font-medium')
+                state_select = ui.select(
+                    options=state_options,
+                    label="Select State",
+                    value=state_options[0],
+                    on_change=lambda: update_team_table()
+                ).classes('w-full')
+
+            # League dropdown
+            with ui.column():
+                ui.label("Filter by League").classes('font-medium')
+                league_select = ui.select(
+                    options=league_options,
+                    label="Select League",
+                    value=league_options[0],
+                    on_change=lambda: update_team_table()
+                ).classes('w-full')
+
+    # Create the team table below the dropdowns
+    with ui.card().classes('w-full p-4 mt-4 shadow-md'):
+        ui.label("Team Results").classes('text-xl font-bold mb-4')
         team_table = ui.table(
             columns=[{'name': 't_name', 'label': 'Team Name', 'field': 't_name'}],
             rows=[],
             row_key='t_name'
-        )
+        ).classes('w-full')
 
-        def update_team_table(state):
-            # Fetch real team data
-            teams = get_teams_by_state(state)
-            team_table.rows = [{'t_name': row['t_name']} for row in teams]
-            team_table.update()
-            ui.notify(f"{'No teams found' if not teams else f'Showing {len(teams)} team(s)'} in {state}")
+    def update_team_table():
+        state = state_select.value
+        league = league_select.value
+        teams = get_filtered_teams(state, league)
+        team_table.rows = [{'t_name': row['t_name']} for row in teams]
+        team_table.update()
 
-        # Dropdown
-        ui.label("Select a State")
-        ui.select(
-            options=state_options,
-            label="Select State",
-            value=state_options[0] if state_options else None,
-            on_change=lambda e: update_team_table(e.value)
-        )
+        state_label = f"in {state}" if state != 'All States' else ""
+        league_label = f"in {league}" if league != 'All Leagues' else ""
+        filter_label = " ".join(filter(None, [state_label, league_label])).strip()
 
-        # Initialize table with default state
-        if state_options:
-            update_team_table(state_options[0])
+        ui.notify(f"{'No teams found' if not teams else f'Showing {len(teams)} team(s)'} {filter_label}")
+
+    # Initialize table with default filters
+    if state_options and league_options:
+        update_team_table()
+    else:
+        ui.notify("No filter options available", type='negative')
 
     ui.link("Back to Home", "/")
 
