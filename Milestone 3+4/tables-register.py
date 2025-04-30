@@ -297,7 +297,7 @@ def mlb_players_page():
 def nfl_teams_page():
     ui.label("NFL Teams")
     nfl_teams_rows = get_nfl_teams()
-    with ui.column().classes('w-full'):
+    with ui.grid(columns=6).classes('w-full'):
         for team in nfl_teams_rows:
             ui.link(team['t_name'], f"/nfl/team/{team['t_name']}")
     
@@ -307,7 +307,7 @@ def nfl_teams_page():
 def nhl_teams_page():
     ui.label("NHL Teams")
     nhl_teams_rows = get_nhl_teams()
-    with ui.column().classes('w-full'):
+    with ui.grid(columns=6).classes('w-full'):
         for team in nhl_teams_rows:
             ui.link(team['t_name'], f"/nhl/team/{team['t_name']}")
 
@@ -317,7 +317,7 @@ def nhl_teams_page():
 def nba_teams_page():   
     ui.label("NBA Teams")
     nba_teams_rows = get_nba_teams()
-    with ui.column().classes('w-full'):
+    with ui.grid(columns=6).classes('w-full'):
         for team in nba_teams_rows:
             ui.link(team['t_name'], f"/nba/team/{team['t_name']}")
 
@@ -327,7 +327,7 @@ def nba_teams_page():
 def mlb_teams_page():
     ui.label("MLB Teams")
     mlb_teams_rows = get_mlb_teams()
-    with ui.column().classes('w-full'):
+    with ui.grid(columns=6).classes('w-full'):
         for team in mlb_teams_rows:
             ui.link(team['t_name'], f"/mlb/team/{team['t_name']}")
 
