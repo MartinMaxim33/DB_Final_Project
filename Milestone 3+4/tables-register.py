@@ -3,6 +3,7 @@ from psycopg.rows import dict_row
 from dbinfo import *
 from nicegui import ui
 from collections import Counter
+import http.cookies
 
 # Connect to an existing database
 conn = psycopg.connect(f"host=dbclass.rhodescs.org dbname=practice user={DBUSER} password={DBPASS}")
@@ -10,15 +11,64 @@ conn = psycopg.connect(f"host=dbclass.rhodescs.org dbname=practice user={DBUSER}
 # Open a cursor to perform database operations
 cur = conn.cursor(row_factory=dict_row)
 
+# Global variable for dark mode
+dark_mode_enabled = False
+
+# Function to load dark mode state (use the global variable)
+def load_dark_mode():
+    ui.dark_mode(dark_mode_enabled)
+
+# Function to toggle dark mode (updates the global variable)
+def toggle_dark_mode():
+    global dark_mode_enabled
+    dark_mode_enabled = not dark_mode_enabled
+    ui.dark_mode(dark_mode_enabled)
+
+# Page setup— called on each page load to capture dark mode
+def page_setup():
+    load_dark_mode()
+
 @ui.page('/')
 def homepage():
-    ui.label("Welcome to the homepage!")
-    ui.link("NFL", "/nfl")
-    ui.link("NHL", "/nhl")
-    ui.link("NBA", "/nba")
-    ui.link("MLB", "/mlb")
-    ui.link("Fantasy", "/fantasy")
-    ui.link("Dashboard", "/dashboard")
+        # Navbar
+        with ui.header().classes('bg-gradient-to-r from-slate-900 to-blue-600 text-white shadow-lg'):
+            ui.label("🏈 SportsDB").classes('text-2xl font-bold px-4')
+            ui.space()
+            ui.link("Home", "/").classes('text-white hover:underline px-3')
+
+        with ui.column().classes('items-center text-center mt-10'):
+            ui.label("Your Gateway to All Major Sports").classes('text-4xl font-bold text-gray-900 dark:text-white')
+            ui.label("Live Scores. Fantasy Stats. Deep Analytics.").classes('text-lg text-gray-500 dark:text-gray-400')
+
+        # Leagues
+        leagues = [
+            {'name': 'NFL', 'url': '/nfl',
+             'img': 'https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg'},
+            {'name': 'NBA', 'url': '/nba',
+             'img': 'https://upload.wikimedia.org/wikipedia/en/0/03/National_Basketball_Association_logo.svg'},
+            {'name': 'MLB', 'url': '/mlb',
+             'img': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Major_League_Baseball_logo.svg/1200px-Major_League_Baseball_logo.svg.png'},
+            {'name': 'NHL', 'url': '/nhl', 'img': 'https://upload.wikimedia.org/wikipedia/en/3/3a/05_NHL_Shield.svg'},
+            {'name': 'Fantasy', 'url': '/fantasy', 'img': 'https://static.nike.com/a/images/f_auto/dpr_3.0,cs_srgb/w_363,c_limit/19b8a89a-afe7-4db0-ba6a-2bb50df14b6f/what-are-the-positions-in-american-football.jpg'},
+            {'name': 'Dashboard', 'url': '/dashboard',
+             'img': 'https://images.ctfassets.net/pdf29us7flmy/2wG8ah2H71AaboKXxJikkC/76e80c9d3833d1054bc327db256e69a0/GOLD-6487-CareerGuide-Batch04-Images-GraphCharts-02-Bar.png'},
+        ]
+
+        with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):  # Use max-w-full to take the entire width
+            for league in leagues:
+                with ui.link().props(f'href={league["url"]}').classes(
+                        'w-full'):  # Use .props() to set the href attribute
+                    with ui.card().classes(
+                            'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):  # Cards take full width of their column
+                        ui.image(league['img']).classes('w-full h-48 object-contain mb-2')
+                        ui.label(league['name']).classes('text-xl font-semibold text-center')
+
+        # Footer
+        with ui.footer().classes(
+                'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+            ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+            ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+                'Toggle Dark Mode')
 
 @ui.page('/nfl')
 def nfl_page():
