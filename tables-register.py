@@ -672,7 +672,7 @@ def filtering_page():
     with ui.card().classes('w-full p-4 mt-4 shadow-md'):
         ui.label("Team Results").classes('text-xl font-bold mb-4')
         team_table = ui.table(
-            columns=[{'name': 't_name', 'label': 'Team Name', 'field': 't_name'}],
+            columns=[{'name': 't_name', 'label': 'Team Name', 'field': 't_name', 'align':'left'}],
             rows=[],
             row_key='t_name'
         ).classes('w-full')
