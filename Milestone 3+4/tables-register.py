@@ -3,7 +3,7 @@ from psycopg.rows import dict_row
 from dbinfo import *
 from nicegui import ui
 from collections import Counter
-import http.cookies
+from psycopg import errors
 
 # Connect to an existing database
 conn = psycopg.connect(f"host=dbclass.rhodescs.org dbname=practice user={DBUSER} password={DBPASS}")
@@ -49,7 +49,7 @@ def homepage():
             {'name': 'MLB', 'url': '/mlb',
              'img': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Major_League_Baseball_logo.svg/1200px-Major_League_Baseball_logo.svg.png'},
             {'name': 'NHL', 'url': '/nhl', 'img': 'https://upload.wikimedia.org/wikipedia/en/3/3a/05_NHL_Shield.svg'},
-            {'name': 'Fantasy', 'url': '/fantasy', 'img': 'https://static.nike.com/a/images/f_auto/dpr_3.0,cs_srgb/w_363,c_limit/19b8a89a-afe7-4db0-ba6a-2bb50df14b6f/what-are-the-positions-in-american-football.jpg'},
+            {'name': 'Filtering', 'url': '/filtering', 'img': 'https://static.nike.com/a/images/f_auto/dpr_3.0,cs_srgb/w_363,c_limit/19b8a89a-afe7-4db0-ba6a-2bb50df14b6f/what-are-the-positions-in-american-football.jpg'},
             {'name': 'Dashboard', 'url': '/dashboard',
              'img': 'https://images.ctfassets.net/pdf29us7flmy/2wG8ah2H71AaboKXxJikkC/76e80c9d3833d1054bc327db256e69a0/GOLD-6487-CareerGuide-Batch04-Images-GraphCharts-02-Bar.png'},
         ]
@@ -69,6 +69,13 @@ def homepage():
             ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
             ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
                 'Toggle Dark Mode')
+    ui.label("Welcome to the homepage!")
+    ui.link("NFL", "/nfl")
+    ui.link("NHL", "/nhl")
+    ui.link("NBA", "/nba")
+    ui.link("MLB", "/mlb")
+    ui.link("Dashboard", "/dashboard")
+    ui.link("Filtering", "/filtering")
 
 @ui.page('/nfl')
 def nfl_page():
@@ -110,7 +117,18 @@ def get_mlb_players_ages():
     cur.execute("select age from player natural join teams where league='MLB'")
     rows = cur.fetchall()
     return rows
-
+def get_nhl_players_ages():
+    cur.execute("select age from player natural join teams where league='NHL'")
+    rows = cur.fetchall()
+    return rows
+def get_nfl_players_ages():
+    cur.execute("select age from player natural join teams where league='NFL'")
+    rows = cur.fetchall()
+    return rows
+def get_nba_players_ages():
+    cur.execute("select age from player natural join teams where league='NBA'")
+    rows = cur.fetchall()
+    return rows
 def get_player_ages():
     cur.execute("select age from player natural join teams")
     rows = cur.fetchall()
@@ -131,15 +149,45 @@ def get_player_states():
     rows = cur.fetchall()
     return rows
 
+def get_teams_by_state(state):
+    try:
+        # Use parameterized query to prevent SQL injection
+        cur.execute("SELECT team_name FROM team WHERE state = %s", (state,))
+        rows = cur.fetchall()
+        return rows
+    except Exception as e:
+        print(f"Error fetching teams for state {state}: {e}")
+        return []
+
+# Database functions
+def get_player_states():
+    cur.execute("select hometown_state from player")
+    rows = cur.fetchall()
+    return rows
+
+def get_players_by_state(state):
+    try:
+        conn.rollback()  # Clear transaction issues
+        cur.execute("SELECT name FROM player WHERE hometown_state = %s", (state,))
+        rows = cur.fetchall()
+        conn.commit()
+        return rows
+    except (errors.OperationalError, errors.ProgrammingError) as e:
+        print(f"Error fetching players for state {state}: {e}")
+        conn.rollback()
+        return []
 
 @ui.page('/dashboard')
 def dashboard_page():
     ui.label("Dashboard")
 
+
     states = get_player_states()
     state_counts = Counter(row['hometown_state'] for row in states)
     state_labels = [str(state) for state in sorted(state_counts.keys())]
     player_counts = [state_counts[state] for state in sorted(state_counts.keys())]
+
+
     if not state_counts:
         ui.label("No player state data available")
     else:
@@ -167,10 +215,26 @@ def dashboard_page():
 
 
     mlb_ages = get_mlb_players_ages()
-    age_counts = Counter(row['age'] for row in mlb_ages)  # Count ages, e.g., {25: 3, 28: 2, 30: 1}
+    nfl_ages = get_nfl_players_ages()
+    nba_ages = get_nba_players_ages()
+    nhl_ages = get_nhl_players_ages()
+    age_counts = Counter(row['age'] for row in mlb_ages)
+    nfl_counts = Counter(row['age'] for row in nfl_ages)
+    nba_counts = Counter(row['age'] for row in nba_ages)
+    nhl_counts = Counter(row['age'] for row in nhl_ages)
     ui.label(f"Age counts: {age_counts}")
-    age_labels = [str(age) for age in sorted(age_counts.keys())]  # Sorted ages, e.g., ['20', '21', ..., '40']
-    player_counts = [age_counts[age] for age in sorted(age_counts.keys())]  # Counts, e.g., [39, 41, ..., 55]
+    ui.label(f"NFL counts: {nfl_counts}")
+    ui.label(f"NBA counts: {nba_counts}")
+    ui.label(f"NHL counts: {nhl_counts}")
+    age_labels = [str(age) for age in sorted(age_counts.keys())]
+    nfl_labels = [str(age) for age in sorted(nfl_counts.keys())]
+    nhl_labels = [str(age) for age in sorted(nhl_counts.keys())]
+    nba_labels = [str(age) for age in sorted(nba_counts.keys())]
+    player_counts = [age_counts[age] for age in sorted(age_counts.keys())]
+    nfl_player_counts = [nfl_counts[age] for age in sorted(nfl_counts.keys())]
+    nhl_player_counts = [nhl_counts[age] for age in sorted(nhl_counts.keys())]
+    nba_player_counts = [nba_counts[age] for age in sorted(nba_counts.keys())]
+
 
     # Create bar chart
     if not age_counts:
@@ -182,7 +246,7 @@ def dashboard_page():
             'xAxis': {
                 'type': 'category',
                 'data': age_labels,
-                'axisLabel': {'interval': 0, 'rotate': 0}  # No rotation needed for short age labels
+                'axisLabel': {'interval': 0, 'rotate': 0}
             },
             'yAxis': {
                 'type': 'value',
@@ -193,7 +257,80 @@ def dashboard_page():
                 'type': 'bar',
                 'name': 'Players',
                 'itemStyle': {
-                    'color': '#3398DB'  # Blue color from example
+                    'color': '#3398DB'
+                }
+            }]
+        })
+    if not nfl_counts:
+        ui.label("No player age data available")
+    else:
+        ui.echart({
+            'title': {'text': 'NFL Players by Age'},
+            'tooltip': {'trigger': 'axis'},
+            'xAxis': {
+                'type': 'category',
+                'data': nfl_labels,
+                'axisLabel': {'interval': 0, 'rotate': 0}
+            },
+            'yAxis': {
+                'type': 'value',
+                'name': 'Number of Players'
+            },
+            'series': [{
+                'data': nfl_player_counts,
+                'type': 'bar',
+                'name': 'Players',
+                'itemStyle': {
+                    'color': '#3398DB'
+                }
+            }]
+        })
+
+    if not nba_counts:
+        ui.label("No player age data available")
+    else:
+        ui.echart({
+            'title': {'text': 'NBA Players by Age'},
+            'tooltip': {'trigger': 'axis'},
+            'xAxis': {
+                'type': 'category',
+                'data': nba_labels,
+                'axisLabel': {'interval': 0, 'rotate': 0}
+            },
+            'yAxis': {
+                'type': 'value',
+                'name': 'Number of Players'
+            },
+            'series': [{
+                'data': nba_player_counts,
+                'type': 'bar',
+                'name': 'Players',
+                'itemStyle': {
+                    'color': '#3398DB'
+                }
+            }]
+        })
+    if not nhl_labels:
+        ui.label("No player age data available")
+    else:
+        ui.echart({
+            'title': {'text': 'NHL Players by Age'},
+            'tooltip': {'trigger': 'axis'},
+            'xAxis': {
+                'type': 'category',
+                'data': nhl_labels,
+                'axisLabel': {'interval': 0, 'rotate': 0}
+            },
+            'yAxis': {
+                'type': 'value',
+                'name': 'Number of Players'
+            },
+            'series': [{
+                'data': nhl_player_counts,
+                'type': 'bar',
+                'name': 'Players',
+                'itemStyle': {
+                    'color': '#3398DB'
                 }
             }]
         })
@@ -311,8 +448,72 @@ def dashboard_page():
             }]
         })
 
+
+
     ui.link("Back to Home", "/")
 
+def get_team_states():
+    try:
+        conn.rollback()
+        cur.execute("SELECT DISTINCT state FROM teams WHERE state IS NOT NULL AND state != '' ORDER BY state")
+        rows = cur.fetchall()
+        conn.commit()
+        return [row['state'] for row in rows]
+    except (errors.OperationalError, errors.ProgrammingError) as e:
+        print(f"Error fetching team states: {e}")
+        conn.rollback()
+        return []
+
+def get_teams_by_state(state):
+    try:
+        conn.rollback()
+        cur.execute("SELECT t_name FROM teams WHERE state = %s", (state,))
+        rows = cur.fetchall()
+        conn.commit()
+        return rows
+    except (errors.OperationalError, errors.ProgrammingError) as e:
+        print(f"Error fetching teams for state {state}: {e}")
+        conn.rollback()
+        return []
+
+# Filtering page (updated to filter teams)
+@ui.page('/filtering')
+def filtering_page():
+    conn.rollback()
+    ui.label("Team Filtering by State")
+
+    state_options = get_team_states()
+    if not state_options:
+        ui.label("No states available")
+    else:
+        # Create table (initially empty)
+        team_table = ui.table(
+            columns=[{'name': 't_name', 'label': 'Team Name', 'field': 't_name'}],
+            rows=[],
+            row_key='t_name'
+        )
+
+        def update_team_table(state):
+            # Fetch real team data
+            teams = get_teams_by_state(state)
+            team_table.rows = [{'t_name': row['t_name']} for row in teams]
+            team_table.update()
+            ui.notify(f"{'No teams found' if not teams else f'Showing {len(teams)} team(s)'} in {state}")
+
+        # Dropdown
+        ui.label("Select a State")
+        ui.select(
+            options=state_options,
+            label="Select State",
+            value=state_options[0] if state_options else None,
+            on_change=lambda e: update_team_table(e.value)
+        )
+
+        # Initialize table with default state
+        if state_options:
+            update_team_table(state_options[0])
+
+    ui.link("Back to Home", "/")
 
 @ui.page('/nfl/players')
 def nfl_players_page():
@@ -347,7 +548,7 @@ def mlb_players_page():
 def nfl_teams_page():
     ui.label("NFL Teams")
     nfl_teams_rows = get_nfl_teams()
-    with ui.column().classes('w-full'):
+    with ui.grid(columns=6).classes('w-full'):
         for team in nfl_teams_rows:
             ui.link(team['t_name'], f"/nfl/team/{team['t_name']}")
     
@@ -357,7 +558,7 @@ def nfl_teams_page():
 def nhl_teams_page():
     ui.label("NHL Teams")
     nhl_teams_rows = get_nhl_teams()
-    with ui.column().classes('w-full'):
+    with ui.grid(columns=6).classes('w-full'):
         for team in nhl_teams_rows:
             ui.link(team['t_name'], f"/nhl/team/{team['t_name']}")
 
@@ -367,7 +568,7 @@ def nhl_teams_page():
 def nba_teams_page():   
     ui.label("NBA Teams")
     nba_teams_rows = get_nba_teams()
-    with ui.column().classes('w-full'):
+    with ui.grid(columns=6).classes('w-full'):
         for team in nba_teams_rows:
             ui.link(team['t_name'], f"/nba/team/{team['t_name']}")
 
@@ -377,7 +578,7 @@ def nba_teams_page():
 def mlb_teams_page():
     ui.label("MLB Teams")
     mlb_teams_rows = get_mlb_teams()
-    with ui.column().classes('w-full'):
+    with ui.grid(columns=6).classes('w-full'):
         for team in mlb_teams_rows:
             ui.link(team['t_name'], f"/mlb/team/{team['t_name']}")
 
@@ -420,7 +621,8 @@ def nfl_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-    
+        coach_tab = ui.tab('Coach')
+
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
             ui.label("Team Roster")
@@ -431,6 +633,10 @@ def nfl_team_page(team_name: str):
             ui.label("Team Schedule")
             schedule = get_team_schedule('NFL',team_name)
             ui.table(rows=schedule)
+        with ui.tab_panel(coach_tab):
+            ui.label("Coach")
+            about = get_team_coach('NFL',team_name)
+            ui.table(rows=about)
 
 @ui.page('/nhl/team/{team_name}')
 def nhl_team_page(team_name: str):
@@ -441,7 +647,8 @@ def nhl_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-    
+        coach_tab = ui.tab('Coach')
+
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
             ui.label("Team Roster")
@@ -453,6 +660,12 @@ def nhl_team_page(team_name: str):
             schedule = get_team_schedule('NHL',team_name)
             ui.table(rows=schedule)
 
+        with ui.tab_panel(coach_tab):
+            ui.label("Coach")
+            about = get_team_coach('NHL',team_name)
+            ui.table(rows=about)
+
+
 @ui.page('/nba/team/{team_name}')
 def nba_team_page(team_name: str):
     ui.label(f"{team_name} Team Page")
@@ -462,7 +675,8 @@ def nba_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-    
+        coach_tab = ui.tab('Coach')
+
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
             ui.label("Team Roster")
@@ -473,6 +687,10 @@ def nba_team_page(team_name: str):
             ui.label("Team Schedule")
             schedule = get_team_schedule('NBA', team_name)
             ui.table(rows=schedule)
+        with ui.tab_panel(coach_tab):
+            ui.label("Coach")
+            about = get_team_coach('NBA',team_name)
+            ui.table(rows=about)
 
 @ui.page('/mlb/team/{team_name}')
 def mlb_team_page(team_name: str):
@@ -483,7 +701,8 @@ def mlb_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-    
+        coach_tab = ui.tab('Coach')
+
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
             ui.label("Team Roster")
@@ -494,6 +713,11 @@ def mlb_team_page(team_name: str):
             ui.label("Team Schedule")
             schedule = get_team_schedule('MLB',team_name)
             ui.table(rows=schedule)
+
+        with ui.tab_panel(coach_tab):
+            ui.label("Coach")
+            about = get_team_coach('MLB',team_name)
+            ui.table(rows=about)
 
 def get_nfl_standings():
     cur.execute("""
@@ -654,7 +878,7 @@ def get_mlb_standings():
 
 def get_team_roster(league, team_name):
     cur.execute("""
-        SELECT first_name, last_name, jersey, age, height, weight, college, hometown, hometown_state
+        SELECT first_name as first, last_name as last, jersey as number, age, height, weight, college, hometown, hometown_state as state
         FROM player 
         NATURAL JOIN teams 
         WHERE league = %s AND t_name = %s
@@ -678,7 +902,10 @@ def get_team_schedule(league_name, team_name):
     """, (league_name, team_name, team_name))
     return cur.fetchall()
 
-
+def get_team_coach(league_name, team_name):
+    cur.execute("""select coach_name as coach, c_age as age from coach natural join teams where teams.league = %s and coach.t_name = %s""",
+                (league_name, team_name))
+    return cur.fetchall()
 
 def get_nfl_teams():
     cur.execute("select t_name from teams where league='NFL'")
@@ -740,20 +967,6 @@ def mlb_games_page():
     ui.link("Back to MLB", "/mlb")
     mlb_games_rows = get_mlb_games()
     mlb_games_table = ui.table(rows=mlb_games_rows)
-
-@ui.page('/fantasy')
-def fantasy_page():
-    ui.label("Fantasy Home Page")
-    ui.link("Players to Draft", "/fantasy/players")
-    ui.link("My team", "/fantasy/team")
-
-@ui.page('/fantasy/players')
-def fantasy_players_page():
-    ui.label("Fantasy Players")
-
-@ui.page('/fantasy/team')
-def fantasy_team_page():
-    ui.label("Fantasy Team")
 
 def get_nfl_players():
     cur.execute("select first_name, last_name, t_name, jersey, hometown, hometown_state, age, height, weight, college from player natural join teams where league='NFL'")
