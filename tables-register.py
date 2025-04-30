@@ -1412,7 +1412,7 @@ def get_mlb_teams():
     return get_mlb_teams
 
 def get_nhl_champs():
-    cur.execute("select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = 'NFL'")
+    cur.execute("select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = 'NHL'")
     get_nhl_champs = cur.fetchall()
     return get_nhl_champs
 
