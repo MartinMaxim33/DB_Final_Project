@@ -92,6 +92,7 @@ def nfl_page():
         {"name": "Players", "url": "/nfl/players", "img": "https://img.freepik.com/premium-vector/american-football-player-silhouette-logo_39679-91.jpg"},
         {"name": "Games", "url": "/nfl/games", "img": "https://static.vecteezy.com/system/resources/previews/019/519/658/non_2x/schedule-icon-for-your-website-mobile-presentation-and-logo-design-free-vector.jpg"},
         {"name": "Standings", "url": "/nfl/standings", "img": "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/podium.png"},
+        {"name" : "Championships", "url" : "/nfl/championships", "img" : "https://cdn3.vectorstock.com/i/1000x1000/73/07/trophy-icon-champion-cup-logo-vector-48747307.jpg"},
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -133,6 +134,9 @@ def nhl_page():
         {"name": "Players", "url": "/nhl/players", "img": "https://static.vecteezy.com/system/resources/previews/016/929/153/non_2x/hockey-player-silhouette-design-athlete-sign-and-symbol-vector.jpg"},
         {"name": "Games", "url": "/nhl/games", "img": "https://static.vecteezy.com/system/resources/previews/019/519/658/non_2x/schedule-icon-for-your-website-mobile-presentation-and-logo-design-free-vector.jpg"},
         {"name": "Standings", "url": "/nhl/standings", "img": "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/podium.png"},
+        {"name": "Championships", "url": "/nhl/championships",
+         "img": "https://cdn3.vectorstock.com/i/1000x1000/73/07/trophy-icon-champion-cup-logo-vector-48747307.jpg"},
+
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -172,6 +176,9 @@ def nba_page():
         {"name": "Players", "url": "/nba/players", "img": "https://www.creativefabrica.com/wp-content/uploads/2019/10/24/basketball-player-silhoutte-with-the-ball-logo-2-1-580x386.jpg"},
         {"name": "Games", "url": "/nba/games", "img": "https://static.vecteezy.com/system/resources/previews/019/519/658/non_2x/schedule-icon-for-your-website-mobile-presentation-and-logo-design-free-vector.jpg"},
         {"name": "Standings", "url": "/nba/standings", "img": "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/podium.png"},
+        {"name": "Championships", "url": "/nba/championships",
+         "img": "https://cdn3.vectorstock.com/i/1000x1000/73/07/trophy-icon-champion-cup-logo-vector-48747307.jpg"},
+
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -211,6 +218,9 @@ def mlb_page():
         {"name": "Players", "url": "/mlb/players", "img": "https://www.shutterstock.com/image-vector/baseball-player-batter-hitter-isolated-600nw-2462157771.jpg"},
         {"name": "Games", "url": "/mlb/games", "img": "https://static.vecteezy.com/system/resources/previews/019/519/658/non_2x/schedule-icon-for-your-website-mobile-presentation-and-logo-design-free-vector.jpg"},
         {"name": "Standings", "url": "/mlb/standings", "img": "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/podium.png"},
+        {"name": "Championships", "url": "/mlb/championships",
+         "img": "https://cdn3.vectorstock.com/i/1000x1000/73/07/trophy-icon-champion-cup-logo-vector-48747307.jpg"},
+
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
