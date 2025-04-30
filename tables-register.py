@@ -30,6 +30,7 @@ def page_setup():
 
 @ui.page('/')
 def homepage():
+        load_dark_mode()
         # Navbar
         with ui.header().classes('bg-gradient-to-r from-slate-900 to-blue-600 text-white shadow-lg'):
             ui.label("🏈 SportsDB").classes('text-2xl font-bold px-4')
@@ -38,7 +39,7 @@ def homepage():
 
         with ui.column().classes('items-center text-center mt-10'):
             ui.label("Your Gateway to All Major Sports").classes('text-4xl font-bold text-gray-900 dark:text-white')
-            ui.label("Live Scores. Fantasy Stats. Deep Analytics.").classes('text-lg text-gray-500 dark:text-gray-400')
+            ui.label("Live Scores. Deep Analytics.").classes('text-lg text-gray-500 dark:text-gray-400')
 
         # Leagues
         leagues = [
@@ -79,6 +80,44 @@ def nfl_page():
     ui.link("Standings", "/nfl/standings")
     ui.link("Championships", "/nfl/championships")
     ui.link("Back to Home", "/")
+    load_dark_mode()
+
+    # Header
+    with ui.header().classes('bg-gradient-to-r from-red-700 to-yellow-600 text-white shadow-lg'):
+        ui.label("🏈 NFL Central").classes('text-2xl font-bold px-4')
+        ui.space()
+        ui.link("Home", "/").classes('text-white hover:underline px-3')
+        ui.link("Dashboard", "/dashboard").classes('text-white hover:underline px-3')
+        ui.link("Fantasy", "/fantasy").classes('text-white hover:underline px-3')
+
+    # Main Section
+    with ui.column().classes('items-center text-center mt-10'):
+        ui.label("Welcome to NFL Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
+        ui.label("Dive into Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+
+    nfl_sections = [
+        {"name": "Teams", "url": "/nfl/teams", "img": "https://cdn-icons-png.flaticon.com/512/609/609803.png"},
+        {"name": "Players", "url": "/nfl/players", "img": "https://cdn-icons-png.flaticon.com/512/1055/1055672.png"},
+        {"name": "Games", "url": "/nfl/games", "img": "https://cdn-icons-png.flaticon.com/512/3239/3239957.png"},
+        {"name": "Standings", "url": "/nfl/standings", "img": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"},
+        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
+    ]
+
+    with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
+        for section in nfl_sections:
+            with ui.link().props(f'href={section["url"]}').classes('w-full'):
+                with ui.card().classes(
+                    'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
+                    ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
+                    ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    # Footer
+    with ui.footer().classes(
+        'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 
 @ui.page('/nhl')
 def nhl_page():
@@ -89,6 +128,39 @@ def nhl_page():
     ui.link("Standings", "/nhl/standings")
     ui.link("Championships", "/nhl/championships")
     ui.link("Back to Home", "/")
+    load_dark_mode()
+
+    with ui.header().classes('bg-gradient-to-r from-blue-900 to-cyan-600 text-white shadow-lg'):
+        ui.label("🏒 NHL Central").classes('text-2xl font-bold px-4')
+        ui.space()
+        ui.link("Home", "/").classes('text-white hover:underline px-3')
+        ui.link("Dashboard", "/dashboard").classes('text-white hover:underline px-3')
+        ui.link("Fantasy", "/fantasy").classes('text-white hover:underline px-3')
+
+    with ui.column().classes('items-center text-center mt-10'):
+        ui.label("Welcome to NHL Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
+        ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+
+    nhl_sections = [
+        {"name": "Teams", "url": "/nhl/teams", "img": "https://cdn-icons-png.flaticon.com/512/894/894939.png"},
+        {"name": "Players", "url": "/nhl/players", "img": "https://cdn-icons-png.flaticon.com/512/2202/2202112.png"},
+        {"name": "Games", "url": "/nhl/games", "img": "https://cdn-icons-png.flaticon.com/512/361/361683.png"},
+        {"name": "Standings", "url": "/nhl/standings", "img": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"},
+        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
+    ]
+
+    with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
+        for section in nhl_sections:
+            with ui.link().props(f'href={section["url"]}').classes('w-full'):
+                with ui.card().classes(
+                    'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
+                    ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
+                    ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    with ui.footer().classes(
+        'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip('Toggle Dark Mode')
 
 @ui.page('/nba')
 def nba_page():
@@ -99,6 +171,39 @@ def nba_page():
     ui.link("Standings", "/nba/standings")
     ui.link("Championships", "/nba/championships")
     ui.link("Back to Home", "/")
+    load_dark_mode()
+
+    with ui.header().classes('bg-gradient-to-r from-indigo-900 to-purple-600 text-white shadow-lg'):
+        ui.label("🏀 NBA Central").classes('text-2xl font-bold px-4')
+        ui.space()
+        ui.link("Home", "/").classes('text-white hover:underline px-3')
+        ui.link("Dashboard", "/dashboard").classes('text-white hover:underline px-3')
+        ui.link("Fantasy", "/fantasy").classes('text-white hover:underline px-3')
+
+    with ui.column().classes('items-center text-center mt-10'):
+        ui.label("Welcome to NBA Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
+        ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+
+    nba_sections = [
+        {"name": "Teams", "url": "/nba/teams", "img": "https://cdn-icons-png.flaticon.com/512/599/599995.png"},
+        {"name": "Players", "url": "/nba/players", "img": "https://cdn-icons-png.flaticon.com/512/1024/1024264.png"},
+        {"name": "Games", "url": "/nba/games", "img": "https://cdn-icons-png.flaticon.com/512/2965/2965567.png"},
+        {"name": "Standings", "url": "/nba/standings", "img": "https://cdn-icons-png.flaticon.com/512/4645/4645945.png"},
+        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
+    ]
+
+    with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
+        for section in nba_sections:
+            with ui.link().props(f'href={section["url"]}').classes('w-full'):
+                with ui.card().classes(
+                    'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
+                    ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
+                    ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    with ui.footer().classes(
+        'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip('Toggle Dark Mode')
 
 @ui.page('/mlb')
 def mlb_page():
@@ -109,6 +214,40 @@ def mlb_page():
     ui.link("Standings", "/mlb/standings")
     ui.link("Championships", "/mlb/championships")
     ui.link("Back to Home", "/")
+    load_dark_mode()
+
+    with ui.header().classes('bg-gradient-to-r from-rose-700 to-red-500 text-white shadow-lg'):
+        ui.label("⚾ MLB Central").classes('text-2xl font-bold px-4')
+        ui.space()
+        ui.link("Home", "/").classes('text-white hover:underline px-3')
+        ui.link("Dashboard", "/dashboard").classes('text-white hover:underline px-3')
+        ui.link("Fantasy", "/fantasy").classes('text-white hover:underline px-3')
+
+    with ui.column().classes('items-center text-center mt-10'):
+        ui.label("Welcome to MLB Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
+        ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+
+    mlb_sections = [
+        {"name": "Teams", "url": "/mlb/teams", "img": "https://cdn-icons-png.flaticon.com/512/8094/8094483.png"},
+        {"name": "Players", "url": "/mlb/players", "img": "https://cdn-icons-png.flaticon.com/512/1022/1022330.png"},
+        {"name": "Games", "url": "/mlb/games", "img": "https://cdn-icons-png.flaticon.com/512/2275/2275252.png"},
+        {"name": "Standings", "url": "/mlb/standings", "img": "https://cdn-icons-png.flaticon.com/512/1040/1040230.png"},
+        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
+    ]
+
+    with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
+        for section in mlb_sections:
+            with ui.link().props(f'href={section["url"]}').classes('w-full'):
+                with ui.card().classes(
+                    'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
+                    ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
+                    ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    with ui.footer().classes(
+        'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip('Toggle Dark Mode')
+
 
 def get_mlb_players_ages():
     cur.execute("select age from player natural join teams where league='MLB'")
@@ -449,66 +588,118 @@ def dashboard_page():
 
     ui.link("Back to Home", "/")
 
+
 def get_team_states():
     try:
         conn.rollback()
         cur.execute("SELECT DISTINCT state FROM teams WHERE state IS NOT NULL AND state != '' ORDER BY state")
         rows = cur.fetchall()
         conn.commit()
-        return [row['state'] for row in rows]
+        return ['All States'] + [row['state'] for row in rows]
     except (errors.OperationalError, errors.ProgrammingError) as e:
         print(f"Error fetching team states: {e}")
         conn.rollback()
         return []
 
-def get_teams_by_state(state):
+
+def get_league():
     try:
         conn.rollback()
-        cur.execute("SELECT t_name FROM teams WHERE state = %s", (state,))
+        cur.execute("SELECT DISTINCT league FROM teams WHERE league IS NOT NULL AND league != '' ORDER BY league")
+        rows = cur.fetchall()
+        conn.commit()
+        return ['All Leagues'] + [row['league'] for row in rows]
+    except (errors.OperationalError, errors.ProgrammingError) as e:
+        print(f"Error fetching leagues: {e}")
+        conn.rollback()
+        return []
+
+
+def get_filtered_teams(state, league):
+    try:
+        conn.rollback()
+        query = "SELECT t_name FROM teams WHERE t_name IS NOT NULL AND t_name != ''"
+        params = []
+
+        if state != 'All States':
+            query += " AND state = %s"
+            params.append(state)
+
+        if league != 'All Leagues':
+            query += " AND league = %s"
+            params.append(league)
+
+        cur.execute(query, tuple(params))
         rows = cur.fetchall()
         conn.commit()
         return rows
     except (errors.OperationalError, errors.ProgrammingError) as e:
-        print(f"Error fetching teams for state {state}: {e}")
+        print(f"Error fetching filtered teams: {e}")
         conn.rollback()
         return []
 
-# Filtering page (updated to filter teams)
+
+# Filtering page with combined filters
 @ui.page('/filtering')
 def filtering_page():
     conn.rollback()
-    ui.label("Team Filtering by State")
 
     state_options = get_team_states()
-    if not state_options:
-        ui.label("No states available")
-    else:
-        # Create table (initially empty)
+    league_options = get_league()
+
+    # Create a container for the dropdowns at the top
+    with ui.card().classes('w-full p-4 shadow-md'):
+        ui.label("Filter Teams").classes('text-xl font-bold mb-4')
+
+        # Create a grid layout for the dropdowns
+        with ui.grid(columns=2).classes('w-full gap-4'):
+            # State dropdown
+            with ui.column():
+                ui.label("Filter by State").classes('font-medium')
+                state_select = ui.select(
+                    options=state_options,
+                    label="Select State",
+                    value=state_options[0],
+                    on_change=lambda: update_team_table()
+                ).classes('w-full')
+
+            # League dropdown
+            with ui.column():
+                ui.label("Filter by League").classes('font-medium')
+                league_select = ui.select(
+                    options=league_options,
+                    label="Select League",
+                    value=league_options[0],
+                    on_change=lambda: update_team_table()
+                ).classes('w-full')
+
+    # Create the team table below the dropdowns
+    with ui.card().classes('w-full p-4 mt-4 shadow-md'):
+        ui.label("Team Results").classes('text-xl font-bold mb-4')
         team_table = ui.table(
             columns=[{'name': 't_name', 'label': 'Team Name', 'field': 't_name'}],
             rows=[],
             row_key='t_name'
-        )
+        ).classes('w-full')
 
-        def update_team_table(state):
-            # Fetch real team data
-            teams = get_teams_by_state(state)
-            team_table.rows = [{'t_name': row['t_name']} for row in teams]
-            team_table.update()
-            ui.notify(f"{'No teams found' if not teams else f'Showing {len(teams)} team(s)'} in {state}")
+    def update_team_table():
+        state = state_select.value
+        league = league_select.value
+        teams = get_filtered_teams(state, league)
+        team_table.rows = [{'t_name': row['t_name']} for row in teams]
+        team_table.update()
 
-        # Dropdown
-        ui.label("Select a State")
-        ui.select(
-            options=state_options,
-            label="Select State",
-            value=state_options[0] if state_options else None,
-            on_change=lambda e: update_team_table(e.value)
-        )
+        state_label = f"in {state}" if state != 'All States' else ""
+        league_label = f"in {league}" if league != 'All Leagues' else ""
+        filter_label = " ".join(filter(None, [state_label, league_label])).strip()
 
-        # Initialize table with default state
-        if state_options:
-            update_team_table(state_options[0])
+        ui.notify(f"{'No teams found' if not teams else f'Showing {len(teams)} team(s)'} {filter_label}")
+
+    # Initialize table with default filters
+    if state_options and league_options:
+        update_team_table()
+    else:
+        ui.notify("No filter options available", type='negative')
 
     ui.link("Back to Home", "/")
 
