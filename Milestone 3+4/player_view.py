@@ -49,7 +49,7 @@ def query_builder(league: str, sort1, sort2):
             sort2 = 'ASC'
         elif sort2 == 'Descending':
             sort2 = 'DESC'
-        return f"SELECT * FROM player natural join teams where league=" + league + "ORDER BY {" +sort1 + "} {" + "sort2" + "}"
+        return f"SELECT * FROM player NATURAL JOIN team where league=" + league + " ORDER BY " + sort1 + " " + sort2
     else:
         return "No sort selected"
 
@@ -62,12 +62,13 @@ def update_sort(league, event: ValueChangeEventArguments, sort1: str, sort2: str
 def refresh_player_list(new_query):
     cur.execute(new_query)
     rows = cur.fetchall()
-    print("Here are the players:\n")
+    return rows
+    """print("Here are the players:\n")
     print(f"{'Name':<20} {'Hometown':<15} {'Age':<5} {'Height':<7} {'Weight':<7} {'School':<30} {'Jersey Number':<5} {'Contract Amount':<15} {'Contract Length':<15}")
     print("-" * 90)
     for player in rows:
         full_name = f"{player['first_name']} {player['last_name']}"
-        print(f"{full_name:<20} {player['hometown']:<15} {player['age']:<5} {player['height']:<7} {player['weight']:<7} {player['school']:<30} {player['jersey_number']:<5} {player['contract_amount']:<15} {player['contract_length']:<15}")
+        print(f"{full_name:<20} {player['hometown']:<15} {player['age']:<5} {player['height']:<7} {player['weight']:<7} {player['school']:<30} {player['jersey_number']:<5} {player['contract_amount']:<15} {player['contract_length']:<15}")"""
 
 # List all players with dropdowns for sorting
 def list_all_players(league):
@@ -77,12 +78,9 @@ def list_all_players(league):
                   on_change=lambda e: update_sort(league, e, sort.sort1, sort.sort2))
         ui.select(['Ascending', 'Descending'],
                   on_change=lambda e: update_sort(league, e, sort.sort1, sort.sort2))
-
-def main():
-    league = 'NHL'
-    list_all_players(league)
+    players = ui.table(refresh_player_list(query_builder(league, sort.sort1, sort.sort2)))
+    ui.run()
 
 
-main()
 cur.close()
 conn.close()
