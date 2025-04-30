@@ -70,6 +70,11 @@ def homepage():
             ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
                 'Toggle Dark Mode')
 
+def get_commissioner(league_name):
+    cur.execute("SELECT commissioner FROM leagues WHERE name = %s", (league_name,))
+    row = cur.fetchall()
+    return row
+
 @ui.page('/nfl')
 def nfl_page():
     load_dark_mode()
@@ -85,6 +90,8 @@ def nfl_page():
     with ui.column().classes('items-center text-center mt-10'):
         ui.label("Welcome to NFL Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
         ui.label("Dive into Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+        commissioner = get_commissioner("NFL")
+        ui.label(f"Commissioner: {commissioner}").classes('text-md text-gray-700 dark:text-gray-300')
 
     nfl_sections = [
         {"name": "Teams", "url": "/nfl/teams", "img": "https://thumbs.dreamstime.com/b/stadium-icon-simple-style-white-background-vector-illustration-83216570.jpg"},
@@ -127,6 +134,8 @@ def nhl_page():
     with ui.column().classes('items-center text-center mt-10'):
         ui.label("Welcome to NHL Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
         ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+        commissioner = get_commissioner("NHL")
+        ui.label(f"Commissioner: {commissioner}").classes('text-md text-gray-700 dark:text-gray-300')
 
     nhl_sections = [
         {"name": "Teams", "url": "/nhl/teams", "img": "https://thumbs.dreamstime.com/b/stadium-icon-simple-style-white-background-vector-illustration-83216570.jpg"},
@@ -169,6 +178,8 @@ def nba_page():
     with ui.column().classes('items-center text-center mt-10'):
         ui.label("Welcome to NBA Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
         ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+        commissioner = get_commissioner("NBA")
+        ui.label(f"Commissioner: {commissioner}").classes('text-md text-gray-700 dark:text-gray-300')
 
     nba_sections = [
         {"name": "Teams", "url": "/nba/teams", "img": "https://thumbs.dreamstime.com/b/stadium-icon-simple-style-white-background-vector-illustration-83216570.jpg"},
@@ -211,6 +222,8 @@ def mlb_page():
     with ui.column().classes('items-center text-center mt-10'):
         ui.label("Welcome to MLB Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
         ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+        commissioner = get_commissioner("MLB")
+        ui.label(f"Commissioner: {commissioner}").classes('text-md text-gray-700 dark:text-gray-300')
 
     mlb_sections = [
         {"name": "Teams", "url": "/mlb/teams", "img": "https://thumbs.dreamstime.com/b/stadium-icon-simple-style-white-background-vector-illustration-83216570.jpg"},
@@ -1064,9 +1077,12 @@ def nfl_team_page(team_name: str):
             ui.label("Head Coach")
             about = get_team_coach('NFL',team_name)
             about2 = get_team_champs('NFL',team_name)
+            about3 = get_team_venue('NFL',team_name)
             ui.table(rows=about)
             ui.label("Superbowl Championships")
             ui.table(rows=about2)
+            ui.label("Home Stadium")
+            ui.table(rows=about3)
 
     # Footer
     with ui.footer().classes(
@@ -1109,6 +1125,9 @@ def nhl_team_page(team_name: str):
             ui.label("Stanley Cup Championships")
             about2 = get_team_champs('NHL',team_name)
             ui.table(rows=about2)
+            about3 = get_team_venue('NHL', team_name)
+            ui.label("Home Stadium")
+            ui.table(rows=about3)
     # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
@@ -1149,6 +1168,9 @@ def nba_team_page(team_name: str):
             ui.label("NBA Championships")
             about2 = get_team_champs('NBA',team_name)
             ui.table(rows=about2)
+            about3 = get_team_venue('NBA', team_name)
+            ui.label("Home Stadium")
+            ui.table(rows=about3)
 
     # Footer
     with ui.footer().classes(
@@ -1191,7 +1213,9 @@ def mlb_team_page(team_name: str):
             ui.label("World Series Championships")
             about2 = get_team_champs('MLB',team_name)
             ui.table(rows=about2)
-
+            about3 = get_team_venue('MLB', team_name)
+            ui.label("Home Stadium")
+            ui.table(rows=about3)
     # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
@@ -1388,6 +1412,10 @@ def get_team_coach(league_name, team_name):
     return cur.fetchall()
 def get_team_champs(league_name, team_name):
     cur.execute("""select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = %s and t.t_name = %s""",
+                (league_name, team_name))
+    return cur.fetchall()
+def get_team_venue(league_name, team_name):
+    cur.execute("""select venues.name, venues.type, venues.capacity, teams.city, teams.state from venues natural join teams where teams.league = %s and teams.t_name = %s""",
                 (league_name, team_name))
     return cur.fetchall()
 def get_nfl_teams():
