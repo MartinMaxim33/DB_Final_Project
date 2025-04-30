@@ -17,7 +17,6 @@ def homepage():
     ui.link("NHL", "/nhl")
     ui.link("NBA", "/nba")
     ui.link("MLB", "/mlb")
-    ui.link("Fantasy", "/fantasy")
     ui.link("Dashboard", "/dashboard")
 
 @ui.page('/nfl')
@@ -60,7 +59,18 @@ def get_mlb_players_ages():
     cur.execute("select age from player natural join teams where league='MLB'")
     rows = cur.fetchall()
     return rows
-
+def get_nhl_players_ages():
+    cur.execute("select age from player natural join teams where league='NHL'")
+    rows = cur.fetchall()
+    return rows
+def get_nfl_players_ages():
+    cur.execute("select age from player natural join teams where league='NFL'")
+    rows = cur.fetchall()
+    return rows
+def get_nba_players_ages():
+    cur.execute("select age from player natural join teams where league='NBA'")
+    rows = cur.fetchall()
+    return rows
 def get_player_ages():
     cur.execute("select age from player natural join teams")
     rows = cur.fetchall()
@@ -117,10 +127,26 @@ def dashboard_page():
 
 
     mlb_ages = get_mlb_players_ages()
-    age_counts = Counter(row['age'] for row in mlb_ages)  # Count ages, e.g., {25: 3, 28: 2, 30: 1}
+    nfl_ages = get_nfl_players_ages()
+    nba_ages = get_nba_players_ages()
+    nhl_ages = get_nhl_players_ages()
+    age_counts = Counter(row['age'] for row in mlb_ages)
+    nfl_counts = Counter(row['age'] for row in nfl_ages)
+    nba_counts = Counter(row['age'] for row in nba_ages)
+    nhl_counts = Counter(row['age'] for row in nhl_ages)
     ui.label(f"Age counts: {age_counts}")
-    age_labels = [str(age) for age in sorted(age_counts.keys())]  # Sorted ages, e.g., ['20', '21', ..., '40']
-    player_counts = [age_counts[age] for age in sorted(age_counts.keys())]  # Counts, e.g., [39, 41, ..., 55]
+    ui.label(f"NFL counts: {nfl_counts}")
+    ui.label(f"NBA counts: {nba_counts}")
+    ui.label(f"NHL counts: {nhl_counts}")
+    age_labels = [str(age) for age in sorted(age_counts.keys())]
+    nfl_labels = [str(age) for age in sorted(nfl_counts.keys())]
+    nhl_labels = [str(age) for age in sorted(nhl_counts.keys())]
+    nba_labels = [str(age) for age in sorted(nba_counts.keys())]
+    player_counts = [age_counts[age] for age in sorted(age_counts.keys())]
+    nfl_player_counts = [nfl_counts[age] for age in sorted(nfl_counts.keys())]
+    nhl_player_counts = [nhl_counts[age] for age in sorted(nhl_counts.keys())]
+    nba_player_counts = [nba_counts[age] for age in sorted(nba_counts.keys())]
+
 
     # Create bar chart
     if not age_counts:
@@ -132,7 +158,7 @@ def dashboard_page():
             'xAxis': {
                 'type': 'category',
                 'data': age_labels,
-                'axisLabel': {'interval': 0, 'rotate': 0}  # No rotation needed for short age labels
+                'axisLabel': {'interval': 0, 'rotate': 0}
             },
             'yAxis': {
                 'type': 'value',
@@ -143,7 +169,80 @@ def dashboard_page():
                 'type': 'bar',
                 'name': 'Players',
                 'itemStyle': {
-                    'color': '#3398DB'  # Blue color from example
+                    'color': '#3398DB'
+                }
+            }]
+        })
+    if not nfl_counts:
+        ui.label("No player age data available")
+    else:
+        ui.echart({
+            'title': {'text': 'NFL Players by Age'},
+            'tooltip': {'trigger': 'axis'},
+            'xAxis': {
+                'type': 'category',
+                'data': nfl_labels,
+                'axisLabel': {'interval': 0, 'rotate': 0}
+            },
+            'yAxis': {
+                'type': 'value',
+                'name': 'Number of Players'
+            },
+            'series': [{
+                'data': nfl_player_counts,
+                'type': 'bar',
+                'name': 'Players',
+                'itemStyle': {
+                    'color': '#3398DB'
+                }
+            }]
+        })
+
+    if not nba_counts:
+        ui.label("No player age data available")
+    else:
+        ui.echart({
+            'title': {'text': 'NBA Players by Age'},
+            'tooltip': {'trigger': 'axis'},
+            'xAxis': {
+                'type': 'category',
+                'data': nba_labels,
+                'axisLabel': {'interval': 0, 'rotate': 0}
+            },
+            'yAxis': {
+                'type': 'value',
+                'name': 'Number of Players'
+            },
+            'series': [{
+                'data': nba_player_counts,
+                'type': 'bar',
+                'name': 'Players',
+                'itemStyle': {
+                    'color': '#3398DB'
+                }
+            }]
+        })
+    if not nhl_labels:
+        ui.label("No player age data available")
+    else:
+        ui.echart({
+            'title': {'text': 'NHL Players by Age'},
+            'tooltip': {'trigger': 'axis'},
+            'xAxis': {
+                'type': 'category',
+                'data': nhl_labels,
+                'axisLabel': {'interval': 0, 'rotate': 0}
+            },
+            'yAxis': {
+                'type': 'value',
+                'name': 'Number of Players'
+            },
+            'series': [{
+                'data': nhl_player_counts,
+                'type': 'bar',
+                'name': 'Players',
+                'itemStyle': {
+                    'color': '#3398DB'
                 }
             }]
         })
@@ -690,20 +789,6 @@ def mlb_games_page():
     ui.link("Back to MLB", "/mlb")
     mlb_games_rows = get_mlb_games()
     mlb_games_table = ui.table(rows=mlb_games_rows)
-
-@ui.page('/fantasy')
-def fantasy_page():
-    ui.label("Fantasy Home Page")
-    ui.link("Players to Draft", "/fantasy/players")
-    ui.link("My team", "/fantasy/team")
-
-@ui.page('/fantasy/players')
-def fantasy_players_page():
-    ui.label("Fantasy Players")
-
-@ui.page('/fantasy/team')
-def fantasy_team_page():
-    ui.label("Fantasy Team")
 
 def get_nfl_players():
     cur.execute("select first_name, last_name, t_name, jersey, hometown, hometown_state, age, height, weight, college from player natural join teams where league='NFL'")
