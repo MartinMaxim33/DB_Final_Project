@@ -30,6 +30,7 @@ def page_setup():
 
 @ui.page('/')
 def homepage():
+        load_dark_mode()
         # Navbar
         with ui.header().classes('bg-gradient-to-r from-slate-900 to-blue-600 text-white shadow-lg'):
             ui.label("🏈 SportsDB").classes('text-2xl font-bold px-4')
@@ -38,7 +39,7 @@ def homepage():
 
         with ui.column().classes('items-center text-center mt-10'):
             ui.label("Your Gateway to All Major Sports").classes('text-4xl font-bold text-gray-900 dark:text-white')
-            ui.label("Live Scores. Fantasy Stats. Deep Analytics.").classes('text-lg text-gray-500 dark:text-gray-400')
+            ui.label("Live Scores. Deep Analytics.").classes('text-lg text-gray-500 dark:text-gray-400')
 
         # Leagues
         leagues = [
@@ -72,39 +73,153 @@ def homepage():
 
 @ui.page('/nfl')
 def nfl_page():
-    ui.label("NFL Home Page")
-    ui.link("Teams", "/nfl/teams")
-    ui.link("Players", "/nfl/players")
-    ui.link("Games", "/nfl/games")
-    ui.link("Standings", "/nfl/standings")
-    ui.link("Back to Home", "/")
+    load_dark_mode()
+
+    # Header
+    with ui.header().classes('bg-gradient-to-r from-red-700 to-yellow-600 text-white shadow-lg'):
+        ui.label("🏈 NFL Central").classes('text-2xl font-bold px-4')
+        ui.space()
+        ui.link("Home", "/").classes('text-white hover:underline px-3')
+        ui.link("Dashboard", "/dashboard").classes('text-white hover:underline px-3')
+        ui.link("Fantasy", "/fantasy").classes('text-white hover:underline px-3')
+
+    # Main Section
+    with ui.column().classes('items-center text-center mt-10'):
+        ui.label("Welcome to NFL Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
+        ui.label("Dive into Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+
+    nfl_sections = [
+        {"name": "Teams", "url": "/nfl/teams", "img": "https://cdn-icons-png.flaticon.com/512/609/609803.png"},
+        {"name": "Players", "url": "/nfl/players", "img": "https://cdn-icons-png.flaticon.com/512/1055/1055672.png"},
+        {"name": "Games", "url": "/nfl/games", "img": "https://cdn-icons-png.flaticon.com/512/3239/3239957.png"},
+        {"name": "Standings", "url": "/nfl/standings", "img": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"},
+        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
+    ]
+
+    with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
+        for section in nfl_sections:
+            with ui.link().props(f'href={section["url"]}').classes('w-full'):
+                with ui.card().classes(
+                    'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
+                    ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
+                    ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    # Footer
+    with ui.footer().classes(
+        'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
+
 
 @ui.page('/nhl')
 def nhl_page():
-    ui.label("NHL Home Page")
-    ui.link("Teams", "/nhl/teams")
-    ui.link("Players", "/nhl/players")
-    ui.link("Games", "/nhl/games")
-    ui.link("Standings", "/nhl/standings")
-    ui.link("Back to Home", "/")
+    load_dark_mode()
+
+    with ui.header().classes('bg-gradient-to-r from-blue-900 to-cyan-600 text-white shadow-lg'):
+        ui.label("🏒 NHL Central").classes('text-2xl font-bold px-4')
+        ui.space()
+        ui.link("Home", "/").classes('text-white hover:underline px-3')
+        ui.link("Dashboard", "/dashboard").classes('text-white hover:underline px-3')
+        ui.link("Fantasy", "/fantasy").classes('text-white hover:underline px-3')
+
+    with ui.column().classes('items-center text-center mt-10'):
+        ui.label("Welcome to NHL Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
+        ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+
+    nhl_sections = [
+        {"name": "Teams", "url": "/nhl/teams", "img": "https://cdn-icons-png.flaticon.com/512/894/894939.png"},
+        {"name": "Players", "url": "/nhl/players", "img": "https://cdn-icons-png.flaticon.com/512/2202/2202112.png"},
+        {"name": "Games", "url": "/nhl/games", "img": "https://cdn-icons-png.flaticon.com/512/361/361683.png"},
+        {"name": "Standings", "url": "/nhl/standings", "img": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"},
+        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
+    ]
+
+    with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
+        for section in nhl_sections:
+            with ui.link().props(f'href={section["url"]}').classes('w-full'):
+                with ui.card().classes(
+                    'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
+                    ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
+                    ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    with ui.footer().classes(
+        'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip('Toggle Dark Mode')
 
 @ui.page('/nba')
 def nba_page():
-    ui.label("NBA Home Page")
-    ui.link("Teams", "/nba/teams")
-    ui.link("Players", "/nba/players")
-    ui.link("Games", "/nba/games")
-    ui.link("Standings", "/nba/standings")
-    ui.link("Back to Home", "/")
+    load_dark_mode()
+
+    with ui.header().classes('bg-gradient-to-r from-indigo-900 to-purple-600 text-white shadow-lg'):
+        ui.label("🏀 NBA Central").classes('text-2xl font-bold px-4')
+        ui.space()
+        ui.link("Home", "/").classes('text-white hover:underline px-3')
+        ui.link("Dashboard", "/dashboard").classes('text-white hover:underline px-3')
+        ui.link("Fantasy", "/fantasy").classes('text-white hover:underline px-3')
+
+    with ui.column().classes('items-center text-center mt-10'):
+        ui.label("Welcome to NBA Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
+        ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+
+    nba_sections = [
+        {"name": "Teams", "url": "/nba/teams", "img": "https://cdn-icons-png.flaticon.com/512/599/599995.png"},
+        {"name": "Players", "url": "/nba/players", "img": "https://cdn-icons-png.flaticon.com/512/1024/1024264.png"},
+        {"name": "Games", "url": "/nba/games", "img": "https://cdn-icons-png.flaticon.com/512/2965/2965567.png"},
+        {"name": "Standings", "url": "/nba/standings", "img": "https://cdn-icons-png.flaticon.com/512/4645/4645945.png"},
+        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
+    ]
+
+    with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
+        for section in nba_sections:
+            with ui.link().props(f'href={section["url"]}').classes('w-full'):
+                with ui.card().classes(
+                    'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
+                    ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
+                    ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    with ui.footer().classes(
+        'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip('Toggle Dark Mode')
 
 @ui.page('/mlb')
 def mlb_page():
-    ui.label("MLB Home Page")
-    ui.link("Teams", "/mlb/teams")
-    ui.link("Players", "/mlb/players")
-    ui.link("Games", "/mlb/games")
-    ui.link("Standings", "/mlb/standings")
-    ui.link("Back to Home", "/")
+    load_dark_mode()
+
+    with ui.header().classes('bg-gradient-to-r from-rose-700 to-red-500 text-white shadow-lg'):
+        ui.label("⚾ MLB Central").classes('text-2xl font-bold px-4')
+        ui.space()
+        ui.link("Home", "/").classes('text-white hover:underline px-3')
+        ui.link("Dashboard", "/dashboard").classes('text-white hover:underline px-3')
+        ui.link("Fantasy", "/fantasy").classes('text-white hover:underline px-3')
+
+    with ui.column().classes('items-center text-center mt-10'):
+        ui.label("Welcome to MLB Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
+        ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
+
+    mlb_sections = [
+        {"name": "Teams", "url": "/mlb/teams", "img": "https://cdn-icons-png.flaticon.com/512/8094/8094483.png"},
+        {"name": "Players", "url": "/mlb/players", "img": "https://cdn-icons-png.flaticon.com/512/1022/1022330.png"},
+        {"name": "Games", "url": "/mlb/games", "img": "https://cdn-icons-png.flaticon.com/512/2275/2275252.png"},
+        {"name": "Standings", "url": "/mlb/standings", "img": "https://cdn-icons-png.flaticon.com/512/1040/1040230.png"},
+        {"name": "Back to Home", "url": "/", "img": "https://cdn-icons-png.flaticon.com/512/25/25694.png"},
+    ]
+
+    with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
+        for section in mlb_sections:
+            with ui.link().props(f'href={section["url"]}').classes('w-full'):
+                with ui.card().classes(
+                    'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):
+                    ui.image(section['img']).classes('w-full h-48 object-contain mb-2')
+                    ui.label(section['name']).classes('text-xl font-semibold text-center')
+
+    with ui.footer().classes(
+        'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip('Toggle Dark Mode')
+
 
 def get_mlb_players_ages():
     cur.execute("select age from player natural join teams where league='MLB'")
