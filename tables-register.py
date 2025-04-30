@@ -49,7 +49,7 @@ def homepage():
             {'name': 'MLB', 'url': '/mlb',
              'img': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Major_League_Baseball_logo.svg/1200px-Major_League_Baseball_logo.svg.png'},
             {'name': 'NHL', 'url': '/nhl', 'img': 'https://upload.wikimedia.org/wikipedia/en/3/3a/05_NHL_Shield.svg'},
-            {'name': 'Filtering', 'url': '/filtering', 'img': 'https://static.nike.com/a/images/f_auto/dpr_3.0,cs_srgb/w_363,c_limit/19b8a89a-afe7-4db0-ba6a-2bb50df14b6f/what-are-the-positions-in-american-football.jpg'},
+            {'name': 'Filtering', 'url': '/filtering', 'img': 'https://as2.ftcdn.net/jpg/03/21/21/25/1000_F_321212541_50msOq3awKbgVjvKfRcZo6HJMFWpOwQJ.jpg'},
             {'name': 'Dashboard', 'url': '/dashboard',
              'img': 'https://images.ctfassets.net/pdf29us7flmy/2wG8ah2H71AaboKXxJikkC/76e80c9d3833d1054bc327db256e69a0/GOLD-6487-CareerGuide-Batch04-Images-GraphCharts-02-Bar.png'},
         ]
@@ -88,10 +88,10 @@ def nfl_page():
         ui.label("Dive into Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
 
     nfl_sections = [
-        {"name": "Teams", "url": "/nfl/teams", "img": "https://cdn-icons-png.flaticon.com/512/609/609803.png"},
-        {"name": "Players", "url": "/nfl/players", "img": "https://cdn-icons-png.flaticon.com/512/1055/1055672.png"},
-        {"name": "Games", "url": "/nfl/games", "img": "https://cdn-icons-png.flaticon.com/512/3239/3239957.png"},
-        {"name": "Standings", "url": "/nfl/standings", "img": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"},
+        {"name": "Teams", "url": "/nfl/teams", "img": "https://thumbs.dreamstime.com/b/stadium-icon-simple-style-white-background-vector-illustration-83216570.jpg"},
+        {"name": "Players", "url": "/nfl/players", "img": "https://img.freepik.com/premium-vector/american-football-player-silhouette-logo_39679-91.jpg"},
+        {"name": "Games", "url": "/nfl/games", "img": "https://static.vecteezy.com/system/resources/previews/019/519/658/non_2x/schedule-icon-for-your-website-mobile-presentation-and-logo-design-free-vector.jpg"},
+        {"name": "Standings", "url": "/nfl/standings", "img": "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/podium.png"},
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -129,10 +129,10 @@ def nhl_page():
         ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
 
     nhl_sections = [
-        {"name": "Teams", "url": "/nhl/teams", "img": "https://cdn-icons-png.flaticon.com/512/894/894939.png"},
-        {"name": "Players", "url": "/nhl/players", "img": "https://cdn-icons-png.flaticon.com/512/2202/2202112.png"},
-        {"name": "Games", "url": "/nhl/games", "img": "https://cdn-icons-png.flaticon.com/512/361/361683.png"},
-        {"name": "Standings", "url": "/nhl/standings", "img": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"},
+        {"name": "Teams", "url": "/nhl/teams", "img": "https://thumbs.dreamstime.com/b/stadium-icon-simple-style-white-background-vector-illustration-83216570.jpg"},
+        {"name": "Players", "url": "/nhl/players", "img": "https://static.vecteezy.com/system/resources/previews/016/929/153/non_2x/hockey-player-silhouette-design-athlete-sign-and-symbol-vector.jpg"},
+        {"name": "Games", "url": "/nhl/games", "img": "https://static.vecteezy.com/system/resources/previews/019/519/658/non_2x/schedule-icon-for-your-website-mobile-presentation-and-logo-design-free-vector.jpg"},
+        {"name": "Standings", "url": "/nhl/standings", "img": "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/podium.png"},
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -168,10 +168,10 @@ def nba_page():
         ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
 
     nba_sections = [
-        {"name": "Teams", "url": "/nba/teams", "img": "https://cdn-icons-png.flaticon.com/512/599/599995.png"},
-        {"name": "Players", "url": "/nba/players", "img": "https://cdn-icons-png.flaticon.com/512/1024/1024264.png"},
-        {"name": "Games", "url": "/nba/games", "img": "https://cdn-icons-png.flaticon.com/512/2965/2965567.png"},
-        {"name": "Standings", "url": "/nba/standings", "img": "https://cdn-icons-png.flaticon.com/512/4645/4645945.png"},
+        {"name": "Teams", "url": "/nba/teams", "img": "https://thumbs.dreamstime.com/b/stadium-icon-simple-style-white-background-vector-illustration-83216570.jpg"},
+        {"name": "Players", "url": "/nba/players", "img": "https://www.creativefabrica.com/wp-content/uploads/2019/10/24/basketball-player-silhoutte-with-the-ball-logo-2-1-580x386.jpg"},
+        {"name": "Games", "url": "/nba/games", "img": "https://static.vecteezy.com/system/resources/previews/019/519/658/non_2x/schedule-icon-for-your-website-mobile-presentation-and-logo-design-free-vector.jpg"},
+        {"name": "Standings", "url": "/nba/standings", "img": "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/podium.png"},
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -207,10 +207,10 @@ def mlb_page():
         ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
 
     mlb_sections = [
-        {"name": "Teams", "url": "/mlb/teams", "img": "https://cdn-icons-png.flaticon.com/512/8094/8094483.png"},
-        {"name": "Players", "url": "/mlb/players", "img": "https://cdn-icons-png.flaticon.com/512/1022/1022330.png"},
-        {"name": "Games", "url": "/mlb/games", "img": "https://cdn-icons-png.flaticon.com/512/2275/2275252.png"},
-        {"name": "Standings", "url": "/mlb/standings", "img": "https://cdn-icons-png.flaticon.com/512/1040/1040230.png"},
+        {"name": "Teams", "url": "/mlb/teams", "img": "https://thumbs.dreamstime.com/b/stadium-icon-simple-style-white-background-vector-illustration-83216570.jpg"},
+        {"name": "Players", "url": "/mlb/players", "img": "https://www.shutterstock.com/image-vector/baseball-player-batter-hitter-isolated-600nw-2462157771.jpg"},
+        {"name": "Games", "url": "/mlb/games", "img": "https://static.vecteezy.com/system/resources/previews/019/519/658/non_2x/schedule-icon-for-your-website-mobile-presentation-and-logo-design-free-vector.jpg"},
+        {"name": "Standings", "url": "/mlb/standings", "img": "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/podium.png"},
     ]
 
     with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):
@@ -333,7 +333,6 @@ def dashboard_page():
             }]
         })
 
-
     mlb_ages = get_mlb_players_ages()
     nfl_ages = get_nfl_players_ages()
     nba_ages = get_nba_players_ages()
@@ -354,7 +353,6 @@ def dashboard_page():
     nfl_player_counts = [nfl_counts[age] for age in sorted(nfl_counts.keys())]
     nhl_player_counts = [nhl_counts[age] for age in sorted(nhl_counts.keys())]
     nba_player_counts = [nba_counts[age] for age in sorted(nba_counts.keys())]
-
 
     # Create bar chart
     if not age_counts:
