@@ -350,10 +350,6 @@ def dashboard_page():
     nfl_counts = Counter(row['age'] for row in nfl_ages)
     nba_counts = Counter(row['age'] for row in nba_ages)
     nhl_counts = Counter(row['age'] for row in nhl_ages)
-    ui.label(f"Age counts: {age_counts}")
-    ui.label(f"NFL counts: {nfl_counts}")
-    ui.label(f"NBA counts: {nba_counts}")
-    ui.label(f"NHL counts: {nhl_counts}")
     age_labels = [str(age) for age in sorted(age_counts.keys())]
     nfl_labels = [str(age) for age in sorted(nfl_counts.keys())]
     nhl_labels = [str(age) for age in sorted(nhl_counts.keys())]
