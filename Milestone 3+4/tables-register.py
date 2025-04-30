@@ -647,7 +647,7 @@ def nfl_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-        coach_tab = ui.tab('Coach')
+        about_tab = ui.tab('About')
 
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
@@ -659,10 +659,12 @@ def nfl_team_page(team_name: str):
             ui.label("Team Schedule")
             schedule = get_team_schedule('NFL',team_name)
             ui.table(rows=schedule)
-        with ui.tab_panel(coach_tab):
-            ui.label("Coach")
+        with ui.tab_panel(about_tab):
+            ui.label("About")
             about = get_team_coach('NFL',team_name)
+            about2 = get_team_champs('NFL',team_name)
             ui.table(rows=about)
+            ui.table(rows=about2)
 
 @ui.page('/nhl/team/{team_name}')
 def nhl_team_page(team_name: str):
@@ -673,7 +675,7 @@ def nhl_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-        coach_tab = ui.tab('Coach')
+        about_tab = ui.tab('About')
 
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
@@ -686,10 +688,12 @@ def nhl_team_page(team_name: str):
             schedule = get_team_schedule('NHL',team_name)
             ui.table(rows=schedule)
 
-        with ui.tab_panel(coach_tab):
-            ui.label("Coach")
+        with ui.tab_panel(about_tab):
+            ui.label("About")
             about = get_team_coach('NHL',team_name)
             ui.table(rows=about)
+            about2 = get_team_champs('NHL',team_name)
+            ui.table(rows=about2)
 
 
 @ui.page('/nba/team/{team_name}')
@@ -701,7 +705,7 @@ def nba_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-        coach_tab = ui.tab('Coach')
+        about_tab = ui.tab('About')
 
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
@@ -713,10 +717,12 @@ def nba_team_page(team_name: str):
             ui.label("Team Schedule")
             schedule = get_team_schedule('NBA', team_name)
             ui.table(rows=schedule)
-        with ui.tab_panel(coach_tab):
-            ui.label("Coach")
+        with ui.tab_panel(about_tab):
+            ui.label("About")
             about = get_team_coach('NBA',team_name)
             ui.table(rows=about)
+            about2 = get_team_champs('NBA',team_name)
+            ui.table(rows=about2)
 
 @ui.page('/mlb/team/{team_name}')
 def mlb_team_page(team_name: str):
@@ -727,7 +733,7 @@ def mlb_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-        coach_tab = ui.tab('Coach')
+        about_tab = ui.tab('About')
 
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
@@ -740,10 +746,12 @@ def mlb_team_page(team_name: str):
             schedule = get_team_schedule('MLB',team_name)
             ui.table(rows=schedule)
 
-        with ui.tab_panel(coach_tab):
-            ui.label("Coach")
+        with ui.tab_panel(about_tab):
+            ui.label("About")
             about = get_team_coach('MLB',team_name)
             ui.table(rows=about)
+            about2 = get_team_champs('MLB',team_name)
+            ui.table(rows=about2)
 
 def get_nfl_standings():
     cur.execute("""
@@ -932,7 +940,10 @@ def get_team_coach(league_name, team_name):
     cur.execute("""select coach_name as coach, c_age as age from coach natural join teams where teams.league = %s and coach.t_name = %s""",
                 (league_name, team_name))
     return cur.fetchall()
-
+def get_team_champs(league_name, team_name):
+    cur.execute("""select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = %s and t.t_name = %s""",
+                (league_name, team_name))
+    return cur.fetchall()
 def get_nfl_teams():
     cur.execute("select t_name from teams where league='NFL'")
     get_nfl_teams = cur.fetchall()
