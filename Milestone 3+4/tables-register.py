@@ -447,25 +447,157 @@ def mlb_team_page(team_name: str):
 
 def get_nfl_standings():
     cur.execute("""
-        select winner as team, count(*) as wins from games where league='NFL' group by winner order by wins desc
+        WITH wins AS (
+            SELECT winner AS team, COUNT(*) AS wins
+            FROM games
+            WHERE league = 'NFL'
+            GROUP BY winner
+        ),
+        losses AS (
+            SELECT loser AS team, COUNT(*) AS losses
+            FROM games
+            WHERE league = 'NFL'
+            GROUP BY loser
+        ),
+        combined AS (
+            SELECT
+                COALESCE(wins.team, losses.team) AS team,
+                COALESCE(wins.wins, 0) AS wins,
+                COALESCE(losses.losses, 0) AS losses
+            FROM wins
+            LEFT JOIN losses ON wins.team = losses.team
+            UNION
+            SELECT
+                COALESCE(wins.team, losses.team) AS team,
+                COALESCE(wins.wins, 0) AS wins,
+                COALESCE(losses.losses, 0) AS losses
+            FROM losses
+            LEFT JOIN wins ON wins.team = losses.team
+        )
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY wins DESC) AS rank,
+            team,
+            wins,
+            losses
+        FROM combined
+        ORDER BY wins DESC
     """)
     return cur.fetchall()
 
 def get_nhl_standings():
     cur.execute("""
-        select winner as team, count(*) as wins from games where league='NHL' group by winner order by wins desc
+        WITH wins AS (
+            SELECT winner AS team, COUNT(*) AS wins
+            FROM games
+            WHERE league = 'NHL'
+            GROUP BY winner
+        ),
+        losses AS (
+            SELECT loser AS team, COUNT(*) AS losses
+            FROM games
+            WHERE league = 'NHL'
+            GROUP BY loser
+        ),
+        combined AS (
+            SELECT
+                COALESCE(wins.team, losses.team) AS team,
+                COALESCE(wins.wins, 0) AS wins,
+                COALESCE(losses.losses, 0) AS losses
+            FROM wins
+            LEFT JOIN losses ON wins.team = losses.team
+            UNION
+            SELECT
+                COALESCE(wins.team, losses.team) AS team,
+                COALESCE(wins.wins, 0) AS wins,
+                COALESCE(losses.losses, 0) AS losses
+            FROM losses
+            LEFT JOIN wins ON wins.team = losses.team
+        )
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY wins DESC) AS rank,
+            team,
+            wins,
+            losses
+        FROM combined
+        ORDER BY wins DESC
     """)
     return cur.fetchall()
 
 def get_nba_standings():
     cur.execute("""
-        select winner as team, count(*) as wins from games where league='NBA' group by winner order by wins desc
+        WITH wins AS (
+            SELECT winner AS team, COUNT(*) AS wins
+            FROM games
+            WHERE league = 'NBA'
+            GROUP BY winner
+        ),
+        losses AS (
+            SELECT loser AS team, COUNT(*) AS losses
+            FROM games
+            WHERE league = 'NBA'
+            GROUP BY loser
+        ),
+        combined AS (
+            SELECT
+                COALESCE(wins.team, losses.team) AS team,
+                COALESCE(wins.wins, 0) AS wins,
+                COALESCE(losses.losses, 0) AS losses
+            FROM wins
+            LEFT JOIN losses ON wins.team = losses.team
+            UNION
+            SELECT
+                COALESCE(wins.team, losses.team) AS team,
+                COALESCE(wins.wins, 0) AS wins,
+                COALESCE(losses.losses, 0) AS losses
+            FROM losses
+            LEFT JOIN wins ON wins.team = losses.team
+        )
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY wins DESC) AS rank,
+            team,
+            wins,
+            losses
+        FROM combined
+        ORDER BY wins DESC
     """)
     return cur.fetchall()
 
 def get_mlb_standings():
     cur.execute("""
-        select winner as team, count(*) as wins from games where league='MLB' group by winner order by wins desc
+        WITH wins AS (
+            SELECT winner AS team, COUNT(*) AS wins
+            FROM games
+            WHERE league = 'MLB'
+            GROUP BY winner
+        ),
+        losses AS (
+            SELECT loser AS team, COUNT(*) AS losses
+            FROM games
+            WHERE league = 'MLB'
+            GROUP BY loser
+        ),
+        combined AS (
+            SELECT
+                COALESCE(wins.team, losses.team) AS team,
+                COALESCE(wins.wins, 0) AS wins,
+                COALESCE(losses.losses, 0) AS losses
+            FROM wins
+            LEFT JOIN losses ON wins.team = losses.team
+            UNION
+            SELECT
+                COALESCE(wins.team, losses.team) AS team,
+                COALESCE(wins.wins, 0) AS wins,
+                COALESCE(losses.losses, 0) AS losses
+            FROM losses
+            LEFT JOIN wins ON wins.team = losses.team
+        )
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY wins DESC) AS rank,
+            team,
+            wins,
+            losses
+        FROM combined
+        ORDER BY wins DESC
     """)
     return cur.fetchall()
 
