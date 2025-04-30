@@ -638,6 +638,10 @@ def filtering_page():
     state_options = get_team_states()
     league_options = get_league()
 
+    with ui.row():
+        ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
+
+
     # Create a container for the dropdowns at the top
     with ui.card().classes('w-full p-4 shadow-md'):
         ui.label("Filter Teams").classes('text-xl font-bold mb-4')
