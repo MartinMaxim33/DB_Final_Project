@@ -69,13 +69,6 @@ def homepage():
             ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
             ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
                 'Toggle Dark Mode')
-    ui.label("Welcome to the homepage!")
-    ui.link("NFL", "/nfl")
-    ui.link("NHL", "/nhl")
-    ui.link("NBA", "/nba")
-    ui.link("MLB", "/mlb")
-    ui.link("Dashboard", "/dashboard")
-    ui.link("Filtering", "/filtering")
 
 @ui.page('/nfl')
 def nfl_page():
