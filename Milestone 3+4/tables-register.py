@@ -703,7 +703,7 @@ def get_mlb_standings():
 
 def get_team_roster(league, team_name):
     cur.execute("""
-        SELECT first_name, last_name, jersey, age, height, weight, college, hometown, hometown_state
+        SELECT first_name as first, last_name as last, jersey as number, age, height, weight, college, hometown, hometown_state as state
         FROM player 
         NATURAL JOIN teams 
         WHERE league = %s AND t_name = %s
