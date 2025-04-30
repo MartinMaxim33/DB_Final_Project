@@ -77,6 +77,7 @@ def nfl_page():
     ui.link("Players", "/nfl/players")
     ui.link("Games", "/nfl/games")
     ui.link("Standings", "/nfl/standings")
+    ui.link("Championships", "/nfl/championships")
     ui.link("Back to Home", "/")
 
 @ui.page('/nhl')
@@ -86,6 +87,7 @@ def nhl_page():
     ui.link("Players", "/nhl/players")
     ui.link("Games", "/nhl/games")
     ui.link("Standings", "/nhl/standings")
+    ui.link("Championships", "/nhl/championships")
     ui.link("Back to Home", "/")
 
 @ui.page('/nba')
@@ -95,6 +97,7 @@ def nba_page():
     ui.link("Players", "/nba/players")
     ui.link("Games", "/nba/games")
     ui.link("Standings", "/nba/standings")
+    ui.link("Championships", "/nba/championships")
     ui.link("Back to Home", "/")
 
 @ui.page('/mlb')
@@ -104,6 +107,7 @@ def mlb_page():
     ui.link("Players", "/mlb/players")
     ui.link("Games", "/mlb/games")
     ui.link("Standings", "/mlb/standings")
+    ui.link("Championships", "/mlb/championships")
     ui.link("Back to Home", "/")
 
 def get_mlb_players_ages():
@@ -605,6 +609,35 @@ def mlb_standings_page():
     standings_rows = get_mlb_standings()
     standings_table = ui.table(rows=standings_rows)
 
+@ui.page('/nhl/championships')
+def nhl_championships_page():
+    ui.label("NHL Championships")
+    ui.link("Back to NHL","/nhl")
+    nhl_champ_rows = get_nhl_champs()
+    championships_table = ui.table(rows=nhl_champ_rows)
+
+@ui.page('/nba/championships')
+def nba_championships_page():
+    ui.label("NBA Championships")
+    ui.link("Back to NBA", "/nba")
+    nba_champ_rows = get_nba_champs()
+    championships_table = ui.table(rows=nba_champ_rows)
+
+@ui.page('/mlb/championships')
+def mlb_championships_page():
+    ui.label("MLB Championships")
+    ui.link("Back to MLB", "/mlb")
+    mlb_champ_rows = get_mlb_champs()
+    championships_table = ui.table(rows=mlb_champ_rows)
+
+@ui.page('/nfl/championships')
+def nfl_championships_page():
+    ui.label("NFL Championships")
+    ui.link("Back to NFL", "/nfl")
+    nfl_champ_rows = get_nfl_champs()
+    championships_table = ui.table(rows=nfl_champ_rows)
+
+
 @ui.page('/nfl/team/{team_name}')
 def nfl_team_page(team_name: str):
     ui.label(f"{team_name} Team Page")
@@ -920,7 +953,25 @@ def get_mlb_teams():
     get_mlb_teams = cur.fetchall()
     return get_mlb_teams
 
+def get_nhl_champs():
+    cur.execute("select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = 'NFL'")
+    get_nhl_champs = cur.fetchall()
+    return get_nhl_champs
 
+def get_mlb_champs():
+    cur.execute("select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = 'MLB'")
+    get_mlb_champs = cur.fetchall()
+    return get_mlb_champs
+
+def get_nfl_champs():
+    cur.execute("select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = 'NFL'")
+    get_nfl_champs = cur.fetchall()
+    return get_nfl_champs
+
+def get_nba_champs():
+    cur.execute("select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = 'NBA'")
+    get_nba_champs = cur.fetchall()
+    return get_nba_champs
 
 def format_game_row(row):
     winner_style = 'font-bold text-green-600'
