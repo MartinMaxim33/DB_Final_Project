@@ -972,8 +972,9 @@ def nfl_team_page(team_name: str):
             schedule = get_team_schedule('NFL',team_name)
             ui.table(rows=schedule)
         with ui.tab_panel(about_tab):
-            ui.label("About")
+            ui.label("Head Coach")
             about = get_team_coach('NFL',team_name)
+            ui.label("Superbowl Championships")
             about2 = get_team_champs('NFL',team_name)
             ui.table(rows=about)
             ui.table(rows=about2)
@@ -1009,9 +1010,10 @@ def nhl_team_page(team_name: str):
             ui.table(rows=schedule)
 
         with ui.tab_panel(about_tab):
-            ui.label("About")
+            ui.label("Head Coach")
             about = get_team_coach('NHL',team_name)
             ui.table(rows=about)
+            ui.label("Stanley Cup Championships")
             about2 = get_team_champs('NHL',team_name)
             ui.table(rows=about2)
     # Footer
@@ -1044,9 +1046,10 @@ def nba_team_page(team_name: str):
             schedule = get_team_schedule('NBA', team_name)
             ui.table(rows=schedule)
         with ui.tab_panel(about_tab):
-            ui.label("About")
+            ui.label("Head Coach")
             about = get_team_coach('NBA',team_name)
             ui.table(rows=about)
+            ui.label("NBA Championships")
             about2 = get_team_champs('NBA',team_name)
             ui.table(rows=about2)
 
@@ -1081,18 +1084,19 @@ def mlb_team_page(team_name: str):
             ui.table(rows=schedule)
 
         with ui.tab_panel(about_tab):
-            ui.label("About")
+            ui.label("Head Coach")
             about = get_team_coach('MLB',team_name)
             ui.table(rows=about)
+            ui.label("World Series Championships")
             about2 = get_team_champs('MLB',team_name)
             ui.table(rows=about2)
 
     # Footer
-        with ui.footer().classes(
-                'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
-            ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
-            ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
-                'Toggle Dark Mode')
+    with ui.footer().classes(
+            'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
+        ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
+        ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
+            'Toggle Dark Mode')
 
 def get_nfl_standings():
     cur.execute("""
