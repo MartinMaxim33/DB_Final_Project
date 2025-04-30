@@ -447,25 +447,25 @@ def mlb_team_page(team_name: str):
 
 def get_nfl_standings():
     cur.execute("""
-        select winner, count(*) as wins from games where league='NFL' group by winner order by wins desc
+        select winner as team, count(*) as wins from games where league='NFL' group by winner order by wins desc
     """)
     return cur.fetchall()
 
 def get_nhl_standings():
     cur.execute("""
-        select winner, count(*) as wins from games where league='NHL' group by winner order by wins desc
+        select winner as team, count(*) as wins from games where league='NHL' group by winner order by wins desc
     """)
     return cur.fetchall()
 
 def get_nba_standings():
     cur.execute("""
-        select winner, count(*) as wins from games where league='NBA' group by winner order by wins desc
+        select winner as team, count(*) as wins from games where league='NBA' group by winner order by wins desc
     """)
     return cur.fetchall()
 
 def get_mlb_standings():
     cur.execute("""
-        select winner, count(*) as wins from games where league='MLB' group by winner order by wins desc
+        select winner as team, count(*) as wins from games where league='MLB' group by winner order by wins desc
     """)
     return cur.fetchall()
 
