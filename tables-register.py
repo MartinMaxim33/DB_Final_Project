@@ -72,6 +72,13 @@ def homepage():
 
 @ui.page('/nfl')
 def nfl_page():
+    ui.label("NFL Home Page")
+    ui.link("Teams", "/nfl/teams")
+    ui.link("Players", "/nfl/players")
+    ui.link("Games", "/nfl/games")
+    ui.link("Standings", "/nfl/standings")
+    ui.link("Championships", "/nfl/championships")
+    ui.link("Back to Home", "/")
     load_dark_mode()
 
     # Header
@@ -113,6 +120,13 @@ def nfl_page():
 
 @ui.page('/nhl')
 def nhl_page():
+    ui.label("NHL Home Page")
+    ui.link("Teams", "/nhl/teams")
+    ui.link("Players", "/nhl/players")
+    ui.link("Games", "/nhl/games")
+    ui.link("Standings", "/nhl/standings")
+    ui.link("Championships", "/nhl/championships")
+    ui.link("Back to Home", "/")
     load_dark_mode()
 
     with ui.header().classes('bg-gradient-to-r from-blue-900 to-cyan-600 text-white shadow-lg'):
@@ -149,6 +163,13 @@ def nhl_page():
 
 @ui.page('/nba')
 def nba_page():
+    ui.label("NBA Home Page")
+    ui.link("Teams", "/nba/teams")
+    ui.link("Players", "/nba/players")
+    ui.link("Games", "/nba/games")
+    ui.link("Standings", "/nba/standings")
+    ui.link("Championships", "/nba/championships")
+    ui.link("Back to Home", "/")
     load_dark_mode()
 
     with ui.header().classes('bg-gradient-to-r from-indigo-900 to-purple-600 text-white shadow-lg'):
@@ -185,6 +206,13 @@ def nba_page():
 
 @ui.page('/mlb')
 def mlb_page():
+    ui.label("MLB Home Page")
+    ui.link("Teams", "/mlb/teams")
+    ui.link("Players", "/mlb/players")
+    ui.link("Games", "/mlb/games")
+    ui.link("Standings", "/mlb/standings")
+    ui.link("Championships", "/mlb/championships")
+    ui.link("Back to Home", "/")
     load_dark_mode()
 
     with ui.header().classes('bg-gradient-to-r from-rose-700 to-red-500 text-white shadow-lg'):
@@ -559,66 +587,118 @@ def dashboard_page():
 
     ui.link("Back to Home", "/")
 
+
 def get_team_states():
     try:
         conn.rollback()
         cur.execute("SELECT DISTINCT state FROM teams WHERE state IS NOT NULL AND state != '' ORDER BY state")
         rows = cur.fetchall()
         conn.commit()
-        return [row['state'] for row in rows]
+        return ['All States'] + [row['state'] for row in rows]
     except (errors.OperationalError, errors.ProgrammingError) as e:
         print(f"Error fetching team states: {e}")
         conn.rollback()
         return []
 
-def get_teams_by_state(state):
+
+def get_league():
     try:
         conn.rollback()
-        cur.execute("SELECT t_name FROM teams WHERE state = %s", (state,))
+        cur.execute("SELECT DISTINCT league FROM teams WHERE league IS NOT NULL AND league != '' ORDER BY league")
+        rows = cur.fetchall()
+        conn.commit()
+        return ['All Leagues'] + [row['league'] for row in rows]
+    except (errors.OperationalError, errors.ProgrammingError) as e:
+        print(f"Error fetching leagues: {e}")
+        conn.rollback()
+        return []
+
+
+def get_filtered_teams(state, league):
+    try:
+        conn.rollback()
+        query = "SELECT t_name FROM teams WHERE t_name IS NOT NULL AND t_name != ''"
+        params = []
+
+        if state != 'All States':
+            query += " AND state = %s"
+            params.append(state)
+
+        if league != 'All Leagues':
+            query += " AND league = %s"
+            params.append(league)
+
+        cur.execute(query, tuple(params))
         rows = cur.fetchall()
         conn.commit()
         return rows
     except (errors.OperationalError, errors.ProgrammingError) as e:
-        print(f"Error fetching teams for state {state}: {e}")
+        print(f"Error fetching filtered teams: {e}")
         conn.rollback()
         return []
 
-# Filtering page (updated to filter teams)
+
+# Filtering page with combined filters
 @ui.page('/filtering')
 def filtering_page():
     conn.rollback()
-    ui.label("Team Filtering by State")
 
     state_options = get_team_states()
-    if not state_options:
-        ui.label("No states available")
-    else:
-        # Create table (initially empty)
+    league_options = get_league()
+
+    # Create a container for the dropdowns at the top
+    with ui.card().classes('w-full p-4 shadow-md'):
+        ui.label("Filter Teams").classes('text-xl font-bold mb-4')
+
+        # Create a grid layout for the dropdowns
+        with ui.grid(columns=2).classes('w-full gap-4'):
+            # State dropdown
+            with ui.column():
+                ui.label("Filter by State").classes('font-medium')
+                state_select = ui.select(
+                    options=state_options,
+                    label="Select State",
+                    value=state_options[0],
+                    on_change=lambda: update_team_table()
+                ).classes('w-full')
+
+            # League dropdown
+            with ui.column():
+                ui.label("Filter by League").classes('font-medium')
+                league_select = ui.select(
+                    options=league_options,
+                    label="Select League",
+                    value=league_options[0],
+                    on_change=lambda: update_team_table()
+                ).classes('w-full')
+
+    # Create the team table below the dropdowns
+    with ui.card().classes('w-full p-4 mt-4 shadow-md'):
+        ui.label("Team Results").classes('text-xl font-bold mb-4')
         team_table = ui.table(
             columns=[{'name': 't_name', 'label': 'Team Name', 'field': 't_name'}],
             rows=[],
             row_key='t_name'
-        )
+        ).classes('w-full')
 
-        def update_team_table(state):
-            # Fetch real team data
-            teams = get_teams_by_state(state)
-            team_table.rows = [{'t_name': row['t_name']} for row in teams]
-            team_table.update()
-            ui.notify(f"{'No teams found' if not teams else f'Showing {len(teams)} team(s)'} in {state}")
+    def update_team_table():
+        state = state_select.value
+        league = league_select.value
+        teams = get_filtered_teams(state, league)
+        team_table.rows = [{'t_name': row['t_name']} for row in teams]
+        team_table.update()
 
-        # Dropdown
-        ui.label("Select a State")
-        ui.select(
-            options=state_options,
-            label="Select State",
-            value=state_options[0] if state_options else None,
-            on_change=lambda e: update_team_table(e.value)
-        )
+        state_label = f"in {state}" if state != 'All States' else ""
+        league_label = f"in {league}" if league != 'All Leagues' else ""
+        filter_label = " ".join(filter(None, [state_label, league_label])).strip()
 
-        # Initialize table with default state
-        if state_options:
-            update_team_table(state_options[0])
+        ui.notify(f"{'No teams found' if not teams else f'Showing {len(teams)} team(s)'} {filter_label}")
+
+    # Initialize table with default filters
+    if state_options and league_options:
+        update_team_table()
+    else:
+        ui.notify("No filter options available", type='negative')
 
     ui.link("Back to Home", "/")
 
@@ -719,6 +799,35 @@ def mlb_standings_page():
     standings_rows = get_mlb_standings()
     standings_table = ui.table(rows=standings_rows)
 
+@ui.page('/nhl/championships')
+def nhl_championships_page():
+    ui.label("NHL Championships")
+    ui.link("Back to NHL","/nhl")
+    nhl_champ_rows = get_nhl_champs()
+    championships_table = ui.table(rows=nhl_champ_rows)
+
+@ui.page('/nba/championships')
+def nba_championships_page():
+    ui.label("NBA Championships")
+    ui.link("Back to NBA", "/nba")
+    nba_champ_rows = get_nba_champs()
+    championships_table = ui.table(rows=nba_champ_rows)
+
+@ui.page('/mlb/championships')
+def mlb_championships_page():
+    ui.label("MLB Championships")
+    ui.link("Back to MLB", "/mlb")
+    mlb_champ_rows = get_mlb_champs()
+    championships_table = ui.table(rows=mlb_champ_rows)
+
+@ui.page('/nfl/championships')
+def nfl_championships_page():
+    ui.label("NFL Championships")
+    ui.link("Back to NFL", "/nfl")
+    nfl_champ_rows = get_nfl_champs()
+    championships_table = ui.table(rows=nfl_champ_rows)
+
+
 @ui.page('/nfl/team/{team_name}')
 def nfl_team_page(team_name: str):
     ui.label(f"{team_name} Team Page")
@@ -728,7 +837,7 @@ def nfl_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-        coach_tab = ui.tab('Coach')
+        about_tab = ui.tab('About')
 
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
@@ -740,10 +849,12 @@ def nfl_team_page(team_name: str):
             ui.label("Team Schedule")
             schedule = get_team_schedule('NFL',team_name)
             ui.table(rows=schedule)
-        with ui.tab_panel(coach_tab):
-            ui.label("Coach")
+        with ui.tab_panel(about_tab):
+            ui.label("About")
             about = get_team_coach('NFL',team_name)
+            about2 = get_team_champs('NFL',team_name)
             ui.table(rows=about)
+            ui.table(rows=about2)
 
 @ui.page('/nhl/team/{team_name}')
 def nhl_team_page(team_name: str):
@@ -754,7 +865,7 @@ def nhl_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-        coach_tab = ui.tab('Coach')
+        about_tab = ui.tab('About')
 
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
@@ -767,10 +878,12 @@ def nhl_team_page(team_name: str):
             schedule = get_team_schedule('NHL',team_name)
             ui.table(rows=schedule)
 
-        with ui.tab_panel(coach_tab):
-            ui.label("Coach")
+        with ui.tab_panel(about_tab):
+            ui.label("About")
             about = get_team_coach('NHL',team_name)
             ui.table(rows=about)
+            about2 = get_team_champs('NHL',team_name)
+            ui.table(rows=about2)
 
 
 @ui.page('/nba/team/{team_name}')
@@ -782,7 +895,7 @@ def nba_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-        coach_tab = ui.tab('Coach')
+        about_tab = ui.tab('About')
 
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
@@ -794,10 +907,12 @@ def nba_team_page(team_name: str):
             ui.label("Team Schedule")
             schedule = get_team_schedule('NBA', team_name)
             ui.table(rows=schedule)
-        with ui.tab_panel(coach_tab):
-            ui.label("Coach")
+        with ui.tab_panel(about_tab):
+            ui.label("About")
             about = get_team_coach('NBA',team_name)
             ui.table(rows=about)
+            about2 = get_team_champs('NBA',team_name)
+            ui.table(rows=about2)
 
 @ui.page('/mlb/team/{team_name}')
 def mlb_team_page(team_name: str):
@@ -808,7 +923,7 @@ def mlb_team_page(team_name: str):
     with ui.tabs().classes('w-full') as tabs:
         roster_tab = ui.tab('Roster')
         schedule_tab = ui.tab('Schedule')
-        coach_tab = ui.tab('Coach')
+        about_tab = ui.tab('About')
 
     with ui.tab_panels(tabs, value=roster_tab).classes('w-full'):
         with ui.tab_panel(roster_tab):
@@ -821,10 +936,12 @@ def mlb_team_page(team_name: str):
             schedule = get_team_schedule('MLB',team_name)
             ui.table(rows=schedule)
 
-        with ui.tab_panel(coach_tab):
-            ui.label("Coach")
+        with ui.tab_panel(about_tab):
+            ui.label("About")
             about = get_team_coach('MLB',team_name)
             ui.table(rows=about)
+            about2 = get_team_champs('MLB',team_name)
+            ui.table(rows=about2)
 
 def get_nfl_standings():
     cur.execute("""
@@ -1013,7 +1130,10 @@ def get_team_coach(league_name, team_name):
     cur.execute("""select coach_name as coach, c_age as age from coach natural join teams where teams.league = %s and coach.t_name = %s""",
                 (league_name, team_name))
     return cur.fetchall()
-
+def get_team_champs(league_name, team_name):
+    cur.execute("""select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = %s and t.t_name = %s""",
+                (league_name, team_name))
+    return cur.fetchall()
 def get_nfl_teams():
     cur.execute("select t_name from teams where league='NFL'")
     get_nfl_teams = cur.fetchall()
@@ -1034,7 +1154,25 @@ def get_mlb_teams():
     get_mlb_teams = cur.fetchall()
     return get_mlb_teams
 
+def get_nhl_champs():
+    cur.execute("select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = 'NFL'")
+    get_nhl_champs = cur.fetchall()
+    return get_nhl_champs
 
+def get_mlb_champs():
+    cur.execute("select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = 'MLB'")
+    get_mlb_champs = cur.fetchall()
+    return get_mlb_champs
+
+def get_nfl_champs():
+    cur.execute("select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = 'NFL'")
+    get_nfl_champs = cur.fetchall()
+    return get_nfl_champs
+
+def get_nba_champs():
+    cur.execute("select c.year, c.winner, c.loser, c.score, c.mvp, c.arena from champs c join teams t on c.winner = t.t_name where t.league = 'NBA'")
+    get_nba_champs = cur.fetchall()
+    return get_nba_champs
 
 def format_game_row(row):
     winner_style = 'font-bold text-green-600'
