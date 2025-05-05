@@ -1087,7 +1087,7 @@ def nfl_team_page(team_name: str):
             ui.label("Manage Coach").classes('text-lg font-bold mt-4')
             with ui.row():
                 new_coach_name = ui.input(label="New Coach Name").classes('w-1/2')
-                new_coach_age = ui.number(label="New Coach Age").classes('w-1/4')  # Use ui.number for numeric input
+                new_coach_age = ui.number(label="New Coach Age").classes('w-1/4')
                 ui.button("Update Coach", on_click=lambda: update_coach(team_name, new_coach_name.value, new_coach_age.value)).classes('bg-blue-500 text-white')
 
 
@@ -1135,6 +1135,13 @@ def nhl_team_page(team_name: str):
             about3 = get_team_venue('NHL', team_name)
             ui.label("Home Stadium")
             ui.table(rows=about3)
+
+            ui.label("Manage Coach").classes('text-lg font-bold mt-4')
+            with ui.row():
+                new_coach_name = ui.input(label="New Coach Name").classes('w-1/2')
+                new_coach_age = ui.number(label="New Coach Age").classes('w-1/4')
+                ui.button("Update Coach", on_click=lambda: update_coach(team_name, new_coach_name.value, new_coach_age.value)).classes('bg-blue-500 text-white')
+
     # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
@@ -1178,6 +1185,12 @@ def nba_team_page(team_name: str):
             about3 = get_team_venue('NBA', team_name)
             ui.label("Home Stadium")
             ui.table(rows=about3)
+
+            ui.label("Manage Coach").classes('text-lg font-bold mt-4')
+            with ui.row():
+                new_coach_name = ui.input(label="New Coach Name").classes('w-1/2')
+                new_coach_age = ui.number(label="New Coach Age").classes('w-1/4')
+                ui.button("Update Coach", on_click=lambda: update_coach(team_name, new_coach_name.value, new_coach_age.value)).classes('bg-blue-500 text-white')
 
     # Footer
     with ui.footer().classes(
@@ -1223,6 +1236,13 @@ def mlb_team_page(team_name: str):
             about3 = get_team_venue('MLB', team_name)
             ui.label("Home Stadium")
             ui.table(rows=about3)
+
+            ui.label("Manage Coach").classes('text-lg font-bold mt-4')
+            with ui.row():
+                new_coach_name = ui.input(label="New Coach Name").classes('w-1/2')
+                new_coach_age = ui.number(label="New Coach Age").classes('w-1/4')
+                ui.button("Update Coach", on_click=lambda: update_coach(team_name, new_coach_name.value, new_coach_age.value)).classes('bg-blue-500 text-white')
+                
     # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
