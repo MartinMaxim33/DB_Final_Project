@@ -90,7 +90,8 @@ def nfl_page():
     with ui.column().classes('items-center text-center mt-10'):
         ui.label("Welcome to NFL Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
         ui.label("Dive into Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
-        commissioner = get_commissioner("NFL")
+        commissioner = get_commissioner("NFL")[0]['commissioner']
+       # commissioner = get_commissioner("NFL")
         ui.label(f"Commissioner: {commissioner}").classes('text-md text-gray-700 dark:text-gray-300')
 
     nfl_sections = [
@@ -134,7 +135,7 @@ def nhl_page():
     with ui.column().classes('items-center text-center mt-10'):
         ui.label("Welcome to NHL Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
         ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
-        commissioner = get_commissioner("NHL")
+        commissioner = get_commissioner("NHL")[0]['commissioner']
         ui.label(f"Commissioner: {commissioner}").classes('text-md text-gray-700 dark:text-gray-300')
 
     nhl_sections = [
@@ -178,7 +179,7 @@ def nba_page():
     with ui.column().classes('items-center text-center mt-10'):
         ui.label("Welcome to NBA Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
         ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
-        commissioner = get_commissioner("NBA")
+        commissioner = get_commissioner("NBA")[0]['commissioner']
         ui.label(f"Commissioner: {commissioner}").classes('text-md text-gray-700 dark:text-gray-300')
 
     nba_sections = [
@@ -222,7 +223,7 @@ def mlb_page():
     with ui.column().classes('items-center text-center mt-10'):
         ui.label("Welcome to MLB Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
         ui.label("Explore Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
-        commissioner = get_commissioner("MLB")
+        commissioner = get_commissioner("MLB")[0]['commissioner']
         ui.label(f"Commissioner: {commissioner}").classes('text-md text-gray-700 dark:text-gray-300')
 
     mlb_sections = [
