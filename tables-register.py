@@ -1084,6 +1084,13 @@ def nfl_team_page(team_name: str):
             ui.label("Home Stadium")
             ui.table(rows=about3)
 
+            ui.label("Manage Coach").classes('text-lg font-bold mt-4')
+            with ui.row():
+                new_coach_name = ui.input(label="New Coach Name").classes('w-1/2')
+                new_coach_age = ui.number(label="New Coach Age").classes('w-1/4')  # Use ui.number for numeric input
+                ui.button("Update Coach", on_click=lambda: update_coach(team_name, new_coach_name.value, new_coach_age.value)).classes('bg-blue-500 text-white')
+
+
     # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
@@ -1222,6 +1229,19 @@ def mlb_team_page(team_name: str):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
         ui.button(icon='dark_mode', on_click=toggle_dark_mode).props('flat round dense color=primary').tooltip(
             'Toggle Dark Mode')
+        
+def update_coach(team_name, coach_name, coach_age):
+    try:
+        conn.rollback()
+        # Remove the current coach
+        cur.execute("DELETE FROM coach WHERE t_name = %s", (team_name,))
+        # Add the new coach
+        cur.execute("INSERT INTO coach (t_name, coach_name, c_age) VALUES (%s, %s, %s)", (team_name, coach_name, coach_age))
+        conn.commit()
+        ui.notify(f"Coach updated successfully for {team_name}", type="positive")
+    except (errors.OperationalError, errors.ProgrammingError) as e:
+        conn.rollback()
+        ui.notify(f"Error updating coach: {e}", type="negative")
 
 def get_nfl_standings():
     cur.execute("""
