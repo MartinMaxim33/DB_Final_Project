@@ -5,33 +5,26 @@ from nicegui import ui
 from collections import Counter
 from psycopg import errors
 
-# Connect to an existing database
 conn = psycopg.connect(f"host=dbclass.rhodescs.org dbname=practice user={DBUSER} password={DBPASS}")
 
-# Open a cursor to perform database operations
 cur = conn.cursor(row_factory=dict_row)
 
-# Global variable for dark mode
 dark_mode_enabled = False
 
-# Function to load dark mode state (use the global variable)
 def load_dark_mode():
     ui.dark_mode(dark_mode_enabled)
 
-# Function to toggle dark mode (updates the global variable)
 def toggle_dark_mode():
     global dark_mode_enabled
     dark_mode_enabled = not dark_mode_enabled
     ui.dark_mode(dark_mode_enabled)
 
-# Page setup— called on each page load to capture dark mode
 def page_setup():
     load_dark_mode()
 
 @ui.page('/')
 def homepage():
         load_dark_mode()
-        # Navbar
         with ui.header().classes('bg-gradient-to-r from-slate-900 to-blue-600 text-white shadow-lg'):
             ui.label("🏈 SportsDB").classes('text-2xl font-bold px-4')
             ui.space()
@@ -40,7 +33,6 @@ def homepage():
         with ui.column().classes('items-center text-center mt-10'):
             ui.label("Your Gateway to All Major Sports").classes('text-4xl font-bold text-gray-900 dark:text-white')
 
-        # Leagues
         leagues = [
             {'name': 'NFL', 'url': '/nfl',
              'img': 'https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg'},
@@ -54,16 +46,15 @@ def homepage():
              'img': 'https://images.ctfassets.net/pdf29us7flmy/2wG8ah2H71AaboKXxJikkC/76e80c9d3833d1054bc327db256e69a0/GOLD-6487-CareerGuide-Batch04-Images-GraphCharts-02-Bar.png'},
         ]
 
-        with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'):  # Use max-w-full to take the entire width
+        with ui.grid(columns=3).classes('gap-6 p-8 max-w-full mx-auto'): 
             for league in leagues:
                 with ui.link().props(f'href={league["url"]}').classes(
-                        'w-full'):  # Use .props() to set the href attribute
+                        'w-full'): 
                     with ui.card().classes(
-                            'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):  # Cards take full width of their column
+                            'hover:scale-105 hover:shadow-2xl transition-transform duration-300 cursor-pointer p-4 w-full'):  
                         ui.image(league['img']).classes('w-full h-48 object-contain mb-2')
                         ui.label(league['name']).classes('text-xl font-semibold text-center')
 
-        # Footer
         with ui.footer().classes(
                 'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
             ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -79,19 +70,16 @@ def get_commissioner(league_name):
 def nfl_page():
     load_dark_mode()
 
-    # Header
     with ui.header().classes('bg-gradient-to-r from-red-700 to-yellow-600 text-white shadow-lg'):
         ui.label("🏈 NFL Central").classes('text-2xl font-bold px-4')
         ui.space()
         ui.link("Home", "/").classes('text-white hover:underline px-3')
         ui.link("Dashboard", "/dashboard").classes('text-white hover:underline px-3')
 
-    # Main Section
     with ui.column().classes('items-center text-center mt-10'):
         ui.label("Welcome to NFL Central").classes('text-4xl font-bold text-gray-900 dark:text-white')
         ui.label("Dive into Teams, Players, Games, and Standings").classes('text-lg text-gray-500 dark:text-gray-400')
         commissioner = get_commissioner("NFL")[0]['commissioner']
-       # commissioner = get_commissioner("NFL")
         ui.label(f"Commissioner: {commissioner}").classes('text-md text-gray-700 dark:text-gray-300')
 
     nfl_sections = [
@@ -113,7 +101,6 @@ def nfl_page():
     with ui.row():
         ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
 
-    # Footer
     with ui.footer().classes(
         'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -295,7 +282,6 @@ def get_player_states():
 
 def get_teams_by_state(state):
     try:
-        # Use parameterized query to prevent SQL injection
         cur.execute("SELECT team_name FROM team WHERE state = %s", (state,))
         rows = cur.fetchall()
         return rows
@@ -303,7 +289,6 @@ def get_teams_by_state(state):
         print(f"Error fetching teams for state {state}: {e}")
         return []
 
-# Database functions
 def get_player_states():
     cur.execute("select hometown_state from player")
     rows = cur.fetchall()
@@ -311,7 +296,7 @@ def get_player_states():
 
 def get_players_by_state(state):
     try:
-        conn.rollback()  # Clear transaction issues
+        conn.rollback()  
         cur.execute("SELECT name FROM player WHERE hometown_state = %s", (state,))
         rows = cur.fetchall()
         conn.commit()
@@ -340,7 +325,7 @@ def dashboard_page():
             'xAxis': {
                 'type': 'category',
                 'data': state_labels,
-                'axisLabel': {'interval': 0, 'rotate': 45}  # No rotation needed for short age labels
+                'axisLabel': {'interval': 0, 'rotate': 45} 
             },
             'yAxis': {
                 'type': 'value',
@@ -351,7 +336,7 @@ def dashboard_page():
                 'type': 'bar',
                 'name': 'Players',
                 'itemStyle': {
-                    'color': '#3398DB'  # Blue color from example
+                    'color': '#3398DB' 
                 }
             }]
         })
@@ -373,7 +358,6 @@ def dashboard_page():
     nhl_player_counts = [nhl_counts[age] for age in sorted(nhl_counts.keys())]
     nba_player_counts = [nba_counts[age] for age in sorted(nba_counts.keys())]
 
-    # Create bar chart
     if not age_counts:
         ui.label("No player age data available")
     else:
@@ -471,8 +455,7 @@ def dashboard_page():
                 }
             }]
         })
-    # All leagues chart
-    all_ages = get_player_ages()  # No league filter
+    all_ages = get_player_ages() 
     all_age_counts = Counter(row['age'] for row in all_ages)
     all_age_labels = [str(age) for age in sorted(all_age_counts.keys())]
     all_player_counts = [all_age_counts[age] for age in sorted(all_age_counts.keys())]
@@ -548,11 +531,11 @@ def dashboard_page():
     for row in venues:
         league = row['league']
         capacity = row['capacity']
-        if league and capacity:  # Skip None or zero capacities
+        if league and capacity: 
             league_capacities[league] = league_capacities.get(league, 0) + capacity
     capacity_data = [
         {'name': league, 'value': total}
-        for league, total in sorted(league_capacities.items(), key=lambda x: x[1], reverse=True)  # Sort by capacity
+        for league, total in sorted(league_capacities.items(), key=lambda x: x[1], reverse=True) 
     ]
 
     if not capacity_data:
@@ -588,7 +571,6 @@ def dashboard_page():
     with ui.row():
         ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -643,7 +625,6 @@ def get_filtered_teams(state, league):
         return []
 
 
-# Filtering page with combined filters
 @ui.page('/filtering')
 def filtering_page():
     load_dark_mode()
@@ -656,13 +637,10 @@ def filtering_page():
         ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
 
 
-    # Create a container for the dropdowns at the top
     with ui.card().classes('w-full p-4 shadow-md'):
         ui.label("Filter Teams").classes('text-xl font-bold mb-4')
 
-        # Create a grid layout for the dropdowns
         with ui.grid(columns=2).classes('w-full gap-4'):
-            # State dropdown
             with ui.column():
                 ui.label("Filter by State").classes('font-medium')
                 state_select = ui.select(
@@ -672,7 +650,6 @@ def filtering_page():
                     on_change=lambda: update_team_table()
                 ).classes('w-full')
 
-            # League dropdown
             with ui.column():
                 ui.label("Filter by League").classes('font-medium')
                 league_select = ui.select(
@@ -682,7 +659,6 @@ def filtering_page():
                     on_change=lambda: update_team_table()
                 ).classes('w-full')
 
-    # Create the team table below the dropdowns
     with ui.card().classes('w-full p-4 mt-4 shadow-md'):
         ui.label("Team Results").classes('text-xl font-bold mb-4')
         team_table = ui.table(
@@ -704,7 +680,6 @@ def filtering_page():
 
         ui.notify(f"{'No teams found' if not teams else f'Showing {len(teams)} team(s)'} {filter_label}")
 
-    # Initialize table with default filters
     if state_options and league_options:
         update_team_table()
     else:
@@ -713,7 +688,6 @@ def filtering_page():
     with ui.row():
         ui.button('🏠 Home', on_click=lambda: ui.run_javascript('window.location.href = "/"'))
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -733,7 +707,6 @@ def nfl_players_page():
     nfl_players_rows = get_nfl_players()
     nfl_players_table = ui.table(rows=nfl_players_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -753,7 +726,6 @@ def nhl_players_page():
     nhl_players_rows = get_nhl_players()
     nhl_players_table = ui.table(rows=nhl_players_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -773,7 +745,6 @@ def nba_players_page():
     nba_players_rows = get_nba_players()
     nba_players_table = ui.table(rows=nba_players_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -793,7 +764,6 @@ def mlb_players_page():
     mlb_players_rows = get_mlb_players()
     mlb_players_table = ui.table(rows=mlb_players_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -815,7 +785,6 @@ def nfl_teams_page():
         ui.icon('arrow_left')
         ui.label('Back to NFL Hub')
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -837,7 +806,6 @@ def nhl_teams_page():
         ui.icon('arrow_left')
         ui.label('Back to NHL Hub')
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -859,7 +827,6 @@ def nba_teams_page():
         ui.icon('arrow_left')
         ui.label('Back to NBA Hub')
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -881,7 +848,6 @@ def mlb_teams_page():
         ui.icon('arrow_left')
         ui.label('Back to MLB Hub')
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -901,7 +867,6 @@ def nfl_standings_page():
     standings_rows = get_nfl_standings()
     standings_table = ui.table(rows=standings_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -921,7 +886,6 @@ def nhl_standings_page():
     standings_rows = get_nhl_standings()
     standings_table = ui.table(rows=standings_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -941,7 +905,6 @@ def nba_standings_page():
     standings_rows = get_nba_standings()
     standings_table = ui.table(rows=standings_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -961,7 +924,6 @@ def mlb_standings_page():
     standings_rows = get_mlb_standings()
     standings_table = ui.table(rows=standings_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -981,7 +943,6 @@ def nhl_championships_page():
     nhl_champ_rows = get_nhl_champs()
     championships_table = ui.table(rows=nhl_champ_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1001,7 +962,6 @@ def nba_championships_page():
     nba_champ_rows = get_nba_champs()
     championships_table = ui.table(rows=nba_champ_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1021,7 +981,6 @@ def mlb_championships_page():
     mlb_champ_rows = get_mlb_champs()
     championships_table = ui.table(rows=mlb_champ_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1041,7 +1000,6 @@ def nfl_championships_page():
     nfl_champ_rows = get_nfl_champs()
     championships_table = ui.table(rows=nfl_champ_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1092,7 +1050,6 @@ def nfl_team_page(team_name: str):
                 ui.button("Update Coach", on_click=lambda: update_coach(team_name, new_coach_name.value, new_coach_age.value)).classes('bg-blue-500 text-white')
 
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1143,7 +1100,6 @@ def nhl_team_page(team_name: str):
                 new_coach_age = ui.number(label="New Coach Age").classes('w-1/4')
                 ui.button("Update Coach", on_click=lambda: update_coach(team_name, new_coach_name.value, new_coach_age.value)).classes('bg-blue-500 text-white')
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1193,7 +1149,6 @@ def nba_team_page(team_name: str):
                 new_coach_age = ui.number(label="New Coach Age").classes('w-1/4')
                 ui.button("Update Coach", on_click=lambda: update_coach(team_name, new_coach_name.value, new_coach_age.value)).classes('bg-blue-500 text-white')
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1244,7 +1199,6 @@ def mlb_team_page(team_name: str):
                 new_coach_age = ui.number(label="New Coach Age").classes('w-1/4')
                 ui.button("Update Coach", on_click=lambda: update_coach(team_name, new_coach_name.value, new_coach_age.value)).classes('bg-blue-500 text-white')
                 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1254,9 +1208,7 @@ def mlb_team_page(team_name: str):
 def update_coach(team_name, coach_name, coach_age):
     try:
         conn.rollback()
-        # Remove the current coach
         cur.execute("DELETE FROM coach WHERE t_name = %s", (team_name,))
-        # Add the new coach
         cur.execute("INSERT INTO coach (t_name, coach_name, c_age) VALUES (%s, %s, %s)", (team_name, coach_name, coach_age))
         conn.commit()
         ui.notify(f"Coach updated successfully for {team_name}", type="positive")
@@ -1523,7 +1475,6 @@ def nfl_games_page():
     nfl_games_rows = get_nfl_games()
     nfl_games_table = ui.table(rows=nfl_games_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1543,7 +1494,6 @@ def nhl_games_page():
     nhl_games_rows = get_nhl_games()
     nhl_games_table = ui.table(rows=nhl_games_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1563,7 +1513,6 @@ def nba_games_page():
     nba_games_rows = get_nba_games()
     nba_games_table = ui.table(rows=nba_games_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
@@ -1583,7 +1532,6 @@ def mlb_games_page():
     mlb_games_rows = get_mlb_games()
     mlb_games_table = ui.table(rows=mlb_games_rows)
 
-    # Footer
     with ui.footer().classes(
             'mt-10 text-center text-white-400 flex justify-between items-center px-6 py-4 bg-slate-100 dark:bg-slate-800'):
         ui.label("Evan DeVine, Jud Turner, Nick Bilotti, and Martin Maxim • Built with NiceGUI").classes('text-sm')
